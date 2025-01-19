@@ -5,7 +5,10 @@ services:
       dockerfile: ./infra/app/Dockerfile
     working_dir: "/usr/src/app"
     tty: true
-    command: python manage.py runserver 0.0.0.0:8000 # サーバー起動コマンドを追加
+    command: sh -c "python manage.py makemigrations && \
+            python manage.py migrate && \
+            python manage.py collectstatic --noinput && \
+            python manage.py runserver 0.0.0.0:8000" # サーバー起動コマンドを追加
     volumes:
       - ./:/usr/src/app
     ports:
@@ -47,3 +50,15 @@ services:
       - ./static:/usr/src/app/static # 静的ファイルをマウント
     depends_on:
       - app # appサービスが先に起動している必要がある
+  
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    # コンテナ内の環境変数を.envを使って設定
+    env_file:
+      - .env
+    links:
+      - db
+    ports:
+      - 4000:80
+    volumes:
+      - ./phpmyadmin/sessions:/sessions
