@@ -3,15 +3,16 @@ services:
     build:
       context: .
       dockerfile: ./infra/app/Dockerfile
-    working_dir: '/usr/src/app'
+    working_dir: "/usr/src/app"
     tty: true
-    command: python manage.py runserver 0.0.0.0:8000  # サーバー起動コマンドを追加
+    command: python manage.py runserver 0.0.0.0:8000 # サーバー起動コマンドを追加
     volumes:
       - ./:/usr/src/app
     ports:
       - "8080:8000"
     depends_on:
-      - db  # dbサービスが先に起動している必要がある
+      db: # dbサービスが先に起動している必要がある
+        condition: service_healthy
 
   db:
     build:
@@ -27,16 +28,22 @@ services:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-  
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "mysqladmin ping -h localhost -u ${MYSQL_USER} -p${MYSQL_PASSWORD} || exit 1",
+        ]
+      interval: 3s
+      timeout: 5s
+      retries: 5
+
   nginx:
     image: nginx:latest
     ports:
-      - "80:80"  # ホストのポート80をNginXにマッピング
+      - "80:80" # ホストのポート80をNginXにマッピング
     volumes:
-      - ./infra/nginx/fnginx.conf:/etc/nginx/conf.d/default.conf  # NginX設定ファイルのマウント
-      - ./static:/usr/src/app/static  # 静的ファイルをマウント
+      - ./infra/nginx/fnginx.conf:/etc/nginx/conf.d/default.conf # NginX設定ファイルのマウント
+      - ./static:/usr/src/app/static # 静的ファイルをマウント
     depends_on:
-      - app  # appサービスが先に起動している必要がある
-
-
-  
+      - app # appサービスが先に起動している必要がある
