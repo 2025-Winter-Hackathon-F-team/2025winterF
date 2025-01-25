@@ -21,7 +21,7 @@ class SignUpView(FormView):
             HttpResponse: フォームを含むレスポンス (失敗時)。
         Raises:
             IntegrityError: メールアドレスの重複登録が発生した場合。
-            ValueError: その他のバリデーションエラーが発生した場合。
+            ValidationError: パスワードのバリデーションエラーが発生した場合。
         """
         try:
             User.objects.create_user(
@@ -30,10 +30,10 @@ class SignUpView(FormView):
             )
         except IntegrityError:
             form.add_error("email", "このメールアドレスはすでに登録されています")
+            return self.form_invalid(form)
         except ValidationError as e:
             for message in e.messages:
                 form.add_error("password", message)
-            if form.errors:
                 return self.form_invalid(form)
 
         return super().form_valid(form)
