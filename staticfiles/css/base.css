@@ -1,0 +1,16 @@
+@charset "utf-8";
+@import url("https://fonts.googleapis.com/css2?family=Kaisei+Opti:wght@400;700&display=swap");
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    list-style: none;
+    text-decoration: none;
+    font-family: "Kaisei Opti", serif;
+    background: linear-gradient(to bottom, #507FA9, #2A222B);
+}
+
+html{
+    height: 100svh; /* 全画面表示 */
+}

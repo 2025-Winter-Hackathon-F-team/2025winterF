@@ -47,7 +47,7 @@ services:
       - "80:80" # ホストのポート80をNginXにマッピング
     volumes:
       - ./infra/nginx/fnginx.conf:/etc/nginx/conf.d/default.conf # NginX設定ファイルのマウント
-      - ./static:/usr/src/app/static # 静的ファイルをマウント
+      - ./staticfiles:/usr/src/app/staticfiles # 静的ファイルをマウント
     depends_on:
       - app # appサービスが先に起動している必要がある
   
