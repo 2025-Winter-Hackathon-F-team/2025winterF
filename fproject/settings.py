@@ -103,13 +103,13 @@ USE_I18N = True
 
 USE_TZ = True
 
-
-
 STATIC_URL = 'static/'
 
 # エラー解消のために記述。
 # 静的ファイルが集約されるディレクトリ
 STATIC_ROOT = '/usr/src/app/static/'
 
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# どのモデルをユーザーモデルとして使用するかを記述
+AUTH_USER_MODEL = "fapp.Users"
