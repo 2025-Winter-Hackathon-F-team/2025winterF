@@ -18,7 +18,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'fapp'
+    'fapp',
+    'account'
 ]
 
 MIDDLEWARE = [
@@ -36,7 +37,7 @@ ROOT_URLCONF = 'fproject.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / "templates"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -51,13 +52,16 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'fproject.wsgi.application'
 
+# カスタムユーザーモデルとして 'account.User' を使用する設定
+# Django のデフォルトの User モデルの代わりに、このモデルが認証システムで使用されます。
+AUTH_USER_MODEL = 'account.User'
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
     'default': {
-        # 利用するデータベースの種類を記載　　
+        # 利用するデータベースの種類を記載
         "ENGINE": "django.db.backends.mysql",
         # mysql上のデータベースを選択
         "NAME": "fteam_db",
@@ -95,7 +99,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ja'
 
 TIME_ZONE = 'UTC'
 
