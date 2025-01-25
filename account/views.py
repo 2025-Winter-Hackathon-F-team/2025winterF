@@ -1,14 +1,15 @@
 from django.urls import reverse_lazy
 from django.views.generic.edit import FormView
+from django.contrib.auth.views import LoginView
 from django.db import IntegrityError
 from django.core.exceptions import ValidationError
-from .forms import SignUpForm
+from .forms import SignUpForm, LoginForm
 from .models import User
 
 class SignUpView(FormView):
     template_name = "signup.html"
     form_class = SignUpForm
-    success_url = reverse_lazy("signup")
+    success_url = reverse_lazy("login")
 
     def form_valid(self, form):
         """
@@ -36,3 +37,7 @@ class SignUpView(FormView):
                 return self.form_invalid(form)
 
         return super().form_valid(form)
+
+class LoginView(LoginView):
+    template_name = "login.html"
+    form_class = LoginForm
