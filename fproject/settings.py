@@ -18,6 +18,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "fapp",
+    "account"
 ]
 
 MIDDLEWARE = [
@@ -50,6 +51,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "fproject.wsgi.application"
 
+# カスタムユーザーモデルとして 'account.User' を使用する設定
+# Django のデフォルトの User モデルの代わりに、このモデルが認証システムで使用されます。
+AUTH_USER_MODEL = 'account.User'
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
@@ -94,7 +98,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
-LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = "ja"
 
 TIME_ZONE = "UTC"
 
