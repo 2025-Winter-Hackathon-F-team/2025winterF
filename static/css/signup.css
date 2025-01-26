@@ -13,12 +13,13 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: 'Source Sans Pro', sans-serif;
+    font-family: "Kaisei Opti", serif;
     min-height: 100vh;
 }
 h1, h2, h3, h4, h5, h6 {
-    font-family: Monoton, sans-serif;
+    font-family: "Kaisei Opti", serif;
     margin-bottom: .5rem;
+    color: #E5D99B;
 }
 .tile {
     background-color: #ffffff;

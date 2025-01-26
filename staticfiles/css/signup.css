@@ -13,12 +13,13 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: 'Source Sans Pro', sans-serif;
+    font-family: "Kaisei Opti", serif;
     min-height: 100vh;
 }
 h1, h2, h3, h4, h5, h6 {
-    font-family: Monoton, sans-serif;
+    font-family: "Kaisei Opti", serif;
     margin-bottom: .5rem;
+    color: #E5D99B;
 }
 .tile {
     background-color: #ffffff;
@@ -266,6 +267,14 @@ h1, h2, h3, h4, h5, h6 {
 .spinner .dot2 {
     -webkit-animation-delay: -1.0s;
     animation-delay: -1.0s;
+}
+.error input {
+    border-color: red;
+}
+.error-text {
+    color: red;
+    font-size: 0.9rem;
+    margin-top: 0.2rem;
 }
 @-webkit-keyframes dot-bounce {
     0%, 100% {
