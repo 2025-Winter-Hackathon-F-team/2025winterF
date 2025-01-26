@@ -61,9 +61,11 @@ WSGI_APPLICATION = "fproject.wsgi.application"
 # Django のデフォルトの User モデルの代わりに、このモデルが認証システムで使用されます。
 AUTH_USER_MODEL = "account.User"
 
-# TODO: ホーム画面に変更
 # ログイン後リダイレクトするURL名を指定
-LOGIN_REDIRECT_URL = "/hello"
+LOGIN_REDIRECT_URL = "/goal/"
+
+# ログアウト後リダイレクトするURL名を指定
+LOGOUT_REDIRECT_URL = "/account/login"
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
