@@ -1,9 +1,14 @@
+import os
+import environ
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# .envファイルを読み込む
+env = environ.Env()
+env.read_env(os.path.join(BASE_DIR, ".env"))
 
-SECRET_KEY = "django-insecure-)8o%h58cv&w)qk$(q)cfe%_k*9pob=o1tko)4kzk*&#1g$sx@%"
+SECRET_KEY = env("SECRET_KEY")
 
 DEBUG = True
 
