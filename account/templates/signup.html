@@ -1,14 +1,61 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Sign Up</title>
-</head>
-<body>
-    <h1>サインアップ</h1>
-    <form method="post">
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}サインアップ{% endblock title %}
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'css/signup.css' %}">
+{% endblock head %}
+
+{% block content %}
+
+<div class="tile">
+  <div class="tile-header">
+    <h2
+      style="
+        color: white;
+        opacity: 0.75;
+        font-size: 4rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+      "
+    >
+      SIGN IN
+    </h2>
+  </div>
+
+  <div class="tile-body">
+    <form id="form" method="post">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">登録</button>
+
+        {% for field in form %}
+      <label class="form-input">
+        {{ field }}
+        <span class="label">{{ field.label  }}</span>
+        <span class="underline"></span>
+        {% if field.errors %}
+            <div class="error-message">
+                {% for error in field.errors %}
+                    <p style="color: red;">{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+      </label>
+      {% endfor %}
+
+      <div class="submit-container clearfix" style="margin-top: 2rem">
+        <button type="submit" class="btn btn-irenic float-right">
+          <span>登録</span>
+        </button>
+      </div>
     </form>
-</body>
-</html>
+  </div>
+</div>
+
+{% endblock content %}
+
+{% block script %}
+    <script src="{% static 'js/signup.js' %}"></script>
+{% endblock script %}
