@@ -1,8 +1,7 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
-from django.db import models
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
-from django.db import IntegrityError
+from django.db import IntegrityError, DatabaseError, models
 
 class CustomUserManager(BaseUserManager):
 
@@ -52,3 +51,39 @@ class User(AbstractBaseUser):
 
     def __str__(self):
         return self.email
+
+    def update_profile_initial(self, name, birthday, deathday):
+        """
+        ユーザー情報を初回更新するためのメソッド。
+        Args:
+            name (str): ユーザーの名前。
+            birthday (date): ユーザーの誕生日 (datetime.date オブジェクト)。
+            deathday (date): ユーザーの命日 (datetime.date オブジェクト)。
+        Returns:
+            User: 更新されたユーザーオブジェクト。
+        Raises:
+            ValidationError: 入力データが不正な場合。
+            DatabaseError: データベース操作が失敗した場合。
+            Exception: その他の予期しないエラーが発生した場合。
+        """
+        try:
+            # ユーザーオブジェクトの属性を更新
+            self.name = name
+            self.birthday = birthday
+            self.deathday = deathday
+            # データベースに保存
+            self.save()
+            print(f"User {self.id} profile updated successfully.")
+            return self
+        except ValidationError as e:
+            # バリデーションエラーの内容を出力
+            print(f"Validation error updating profile for user {self.id}: {e}")
+            raise
+        except DatabaseError as e:
+            # データベースエラーの内容を出力
+            print(f"Database error updating profile for user {self.id}: {e}")
+            raise
+        except Exception as e:
+            # その他のエラー内容を出力
+            print(f"Unexpected error updating profile for user {self.id}: {e}")
+            raise
