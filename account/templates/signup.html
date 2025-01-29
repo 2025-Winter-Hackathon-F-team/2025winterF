@@ -1,7 +1,12 @@
-{% extends "base.html" %} {% load static %} {% block title %}サインアップ{%
-endblock title %} {% block head %}
+{% extends "base.html" %}
+{% load static %}
+{% block title %}
+サインアップ
+{% endblock title %}
+{% block head %}
 <link rel="stylesheet" href="{% static 'css/signup.css' %}" />
-{% endblock head %} {% block content %}
+{% endblock head %}
+{% block content %}
 
 <div class="tile">
   <div class="tile-header">
@@ -35,14 +40,21 @@ endblock title %} {% block head %}
       </label>
       {% endfor %}
 
-      <div class="submit-container clearfix" style="margin-top: 2rem">
-        <button type="submit" class="btn btn-irenic float-right">
-          <span>登録</span>
-        </button>
+      <div class="submit-container clearfix" style="margin-top: 2rem; text-align: center;">
+        <div class="button-wrapper">
+          <button type="submit" class="btn btn-irenic">
+            <span>登録</span>
+            <!-- loginリンク -->
+          </button>
+          <div class="login-link">
+              <a href="{% url 'account:login' %}">ログインフォームへ</a>
+          </div>
+        </div>
       </div>
     </form>
   </div>
 </div>
+
 
 {% endblock content %} {% block script %}
 <script src="{% static 'js/signup.js' %}"></script>

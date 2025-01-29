@@ -179,7 +179,7 @@ h1, h2, h3, h4, h5, h6 {
     outline: none;
     opacity: 1;
     transition: transform .1s ease-in, opacity .1s ease-in, border-radius .1s ease-in;
-    right: -1px;
+    /* right: -1px; */
 }
 .submit-container #submit span {
     opacity: 1;
@@ -275,6 +275,12 @@ h1, h2, h3, h4, h5, h6 {
     color: red;
     font-size: 0.9rem;
     margin-top: 0.2rem;
+}
+.button-wrapper {
+    display: flex;
+    flex-direction: column; /* 要素を縦並びにする */
+    align-items: center;
+    gap: 20px; /* ボタンとリンクの間隔 */
 }
 @-webkit-keyframes dot-bounce {
     0%, 100% {
