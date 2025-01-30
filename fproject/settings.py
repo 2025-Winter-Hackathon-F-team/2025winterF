@@ -62,10 +62,13 @@ WSGI_APPLICATION = "fproject.wsgi.application"
 AUTH_USER_MODEL = "account.User"
 
 # ログイン後リダイレクトするURL名を指定
-LOGIN_REDIRECT_URL = "/goal/"
+LOGIN_REDIRECT_URL = "goal:home"
 
 # ログアウト後リダイレクトするURL名を指定
-LOGOUT_REDIRECT_URL = "/account/login"
+LOGOUT_REDIRECT_URL = "account:login"
+
+# ログインページのURL名を指定
+LOGIN_URL = "account:login"
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
