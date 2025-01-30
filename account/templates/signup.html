@@ -1,14 +1,61 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Sign Up</title>
-</head>
-<body>
-    <h1>サインアップ</h1>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">登録</button>
+{% extends "base.html" %}
+{% load static %}
+{% block title %}
+サインアップ
+{% endblock title %}
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/signup.css' %}" />
+{% endblock head %}
+{% block content %}
+
+<div class="tile">
+  <div class="tile-header">
+    <h3
+      style="
+        color: #e5d99b;
+        opacity: 0.75;
+        display: flex;
+        justify-content: start;
+        align-items: end;
+      "
+    >
+      memento mori
+    </h3>
+  </div>
+
+  <div class="tile-body">
+    <form id="form" method="post">
+      {% csrf_token %} {% for field in form %}
+      <label class="form-input">
+        {{ field }}
+        <span class="label">{{ field.label }}</span>
+        <span class="underline"></span>
+        {% if field.errors %}
+        <div class="error-message">
+          {% for error in field.errors %}
+          <p style="color: red">{{ error }}</p>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </label>
+      {% endfor %}
+
+      <div class="submit-container clearfix" style="margin-top: 2rem; text-align: center;">
+        <div class="button-wrapper">
+          <button type="submit" class="btn btn-irenic">
+            <span>登録</span>
+            <!-- loginリンク -->
+          </button>
+          <div class="login-link">
+              <a href="{% url 'account:login' %}">ログインフォームへ</a>
+          </div>
+        </div>
+      </div>
     </form>
-</body>
-</html>
+  </div>
+</div>
+
+
+{% endblock content %} {% block script %}
+<script src="{% static 'js/signup.js' %}"></script>
+{% endblock script %}
