@@ -11,7 +11,7 @@ from .models import User
 class SignUpView(FormView):
     template_name = "signup.html"
     form_class = SignUpForm
-    success_url = reverse_lazy("login")
+    success_url = reverse_lazy("account:login")
 
     def form_valid(self, form):
         """
@@ -43,6 +43,7 @@ class SignUpView(FormView):
 class LoginView(LoginView):
     template_name = "login.html"
     form_class = LoginForm
+
 
 
 class InitialSetupView(LoginRequiredMixin, UpdateView):
@@ -89,3 +90,4 @@ class InitialSetupView(LoginRequiredMixin, UpdateView):
 
         # エラーが発生した場合、フォームを含むレスポンスを返す
         return self.form_invalid(form)
+
