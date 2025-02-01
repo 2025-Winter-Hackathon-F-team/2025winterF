@@ -1,16 +1,53 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login</title>
-</head>
-<body>
-  <h1>ログイン</h1>
-  <form method="post">
-      {% csrf_token %}
-      {{ form.as_p }}
-      <button type="submit">ログイン</button>
-  </form>
-</body>
-</html>
+{% extends "base.html" %}
+{% load static %}
+{% block title %}
+ログイン
+{% endblock title %}
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/login.css' %}" />
+{% endblock head %}
+{% block content %}
+
+<div class="tile">
+  <div class="tile-header">
+    <h3 class="tile-appname">
+      FiniteDays
+    </h3>
+  </div>
+
+  <div class="tile-body">
+    <form id="form" method="post">
+      {% csrf_token %} {% for field in form %}
+      <label class="form-input">
+        {{ field }}
+        <span class="label">{{ field.label }}</span>
+        <span class="underline"></span>
+        {% if field.errors %}
+        <div class="error-message">
+          {% for error in field.errors %}
+          <p style="color: red">{{ error }}</p>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </label>
+      {% endfor %}
+
+      <div class="submit-container clearfix" style="margin-top: 2rem; text-align: center;">
+        <div class="button-wrapper">
+          <button type="submit" class="btn btn-irenic">
+            <span>ログイン</span>
+            <!-- signupリンク -->
+          </button>
+          <div class="signup-link">
+              <a href="{% url 'account:signup' %}">サインアップフォームへ</a>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+{% endblock content %} {% block script %}
+<script src="{% static 'js/login.js' %}"></script>
+{% endblock script %}
