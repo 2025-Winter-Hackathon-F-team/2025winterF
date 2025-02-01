@@ -1,54 +1,15 @@
 from django.urls import reverse_lazy
-from django.views.generic.edit import FormView, UpdateView
-from django.contrib.auth.views import LoginView
+from django.views.generic.edit import UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db import DatabaseError, IntegrityError
+from django.db import DatabaseError
 from django.core.exceptions import ValidationError
 
-from .forms import InitialSetupForm, SignUpForm, LoginForm
-from .models import User
+from ..forms import SetupForm
+from ..models import User
 
-class SignUpView(FormView):
-    template_name = "signup.html"
-    form_class = SignUpForm
-    success_url = reverse_lazy("account:login")
-
-    def form_valid(self, form):
-        """
-        フォームが有効な場合に呼び出され、ユーザーを作成する。
-        Args:
-            form (SignUpForm): 送信されたフォーム。
-        Returns:
-            HttpResponseRedirect: リダイレクトレスポンス (成功時)。
-            HttpResponse: フォームを含むレスポンス (失敗時)。
-        Raises:
-            IntegrityError: メールアドレスの重複登録が発生した場合。
-            ValidationError: パスワードのバリデーションエラーが発生した場合。
-        """
-        try:
-            User.objects.create_user(
-                email=form.cleaned_data["email"],
-                password=form.cleaned_data["password"],
-            )
-        except IntegrityError:
-            form.add_error("email", "このメールアドレスはすでに登録されています")
-            return self.form_invalid(form)
-        except ValidationError as e:
-            for message in e.messages:
-                form.add_error("password", message)
-                return self.form_invalid(form)
-
-        return super().form_valid(form)
-
-class LoginView(LoginView):
-    template_name = "login.html"
-    form_class = LoginForm
-
-
-
-class InitialSetupView(LoginRequiredMixin, UpdateView):
-    template_name = "initial_setup.html"
-    form_class = InitialSetupForm
+class SetupView(LoginRequiredMixin, UpdateView):
+    template_name = "setup.html"
+    form_class = SetupForm
     model = User
     success_url = reverse_lazy('goal:home')
 
@@ -90,4 +51,3 @@ class InitialSetupView(LoginRequiredMixin, UpdateView):
 
         # エラーが発生した場合、フォームを含むレスポンスを返す
         return self.form_invalid(form)
-

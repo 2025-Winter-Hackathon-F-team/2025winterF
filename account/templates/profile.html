@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ユーザープロフィール</title>
+</head>
+<body>
+  <p>名前: {% if user.name %}{{ user.name }}{% else %}未設定{% endif %}</p>
+  <p>メールアドレス: {{ user.email }}</p>
+  <p>年齢: {% if age %}{{ age }}{% else %}未設定{% endif %}</p>
+  <p>
+    {% if life_span %}
+      {{ life_span }}歳まで
+    {% else %}
+      未設定
+    {% endif %}
+    {% if user.birthday and user.deathday %}
+      {{ user.deathday|date:"Y/m/d" }} - {{ user.birthday|date:"Y/m/d" }}
+    {% endif %}
+  </p>
+</body>
+</html>
