@@ -17,10 +17,10 @@ class LoginForm(AuthenticationForm):
             - password (CharField): パスワード入力フィールド。必須エラーメッセージを設定。
         """
         super().__init__(*args, **kwargs)
-        self.fields['username'] = forms.EmailField(
-            label='メールアドレス',
+        self.fields["username"] = forms.EmailField(
+            label="メールアドレス",
             widget=forms.EmailInput(attrs={"autofocus": True}),
             error_messages={"required": "メールアドレスを入力してください。"}
         )
-        self.fields['password'].label = 'パスワード'
-        self.fields['password'].error_messages = {"required": "パスワードを入力してください。"}
+        self.fields["password"].label = "パスワード"
+        self.fields["password"].error_messages = {"required": "パスワードを入力してください。"}

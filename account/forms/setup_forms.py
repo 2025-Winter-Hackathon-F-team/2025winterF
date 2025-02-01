@@ -14,7 +14,7 @@ class SetupForm(forms.ModelForm):
     )
     birthday = forms.DateField(
         label="誕生日",
-        widget=forms.DateInput(attrs={'type': 'date'}),
+        widget=forms.DateInput(attrs={"type": "date"}),
         required=True
     )
     # IntegerField で寿命を受け取る
@@ -23,7 +23,7 @@ class SetupForm(forms.ModelForm):
         required=False,
         min_value=1,
         max_value=120,
-        widget=forms.NumberInput(attrs={'step': '1'})
+        widget=forms.NumberInput(attrs={"step": "1"})
     )
 
     class Meta:
