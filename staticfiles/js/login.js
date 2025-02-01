@@ -1,7 +1,7 @@
 var $btn = document.getElementById("submit");
 var $form = document.getElementById("form");
 
-function signIn() {
+function login() {
   if ($form.checkValidity()) {
     $btn.classList.add("pending");
     window.setTimeout(function () {
