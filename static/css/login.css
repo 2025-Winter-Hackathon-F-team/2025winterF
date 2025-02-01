@@ -37,6 +37,13 @@ h1, h2, h3, h4, h5, h6 {
     background-size: cover;
     height: 12rem;
 }
+.tile .tile-appname {
+    color: #e5d99b;
+    opacity: 0.75;
+    display: flex;
+    justify-content: end;
+    align-items: end;
+}
 .tile .tile-body {
     padding: 2rem;
 }
