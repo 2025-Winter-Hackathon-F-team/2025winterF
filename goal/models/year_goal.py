@@ -41,3 +41,10 @@ class YearGoal(models.Model):
     def __str__(self):
         user_email = getattr(self.user, 'email', 'Unknown Email')
         return f"{self.year.year} - {self.title} ({user_email})"
+
+    # 目標の作成メソッド
+    def create(self, user, year, title):
+        self.user = user
+        self.year = year
+        self.title = title
+        self.save()
