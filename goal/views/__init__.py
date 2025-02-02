@@ -1,2 +1,2 @@
 from .home import HomeView
-from .create_year_goal import CreateYearGoalView
+from .year_goal.create_year_goal_views import CreateYearGoalView

@@ -1,4 +1,4 @@
-from ..models import YearGoal
+from ...models import YearGoal
 from django import forms
 
 class YearGoalForm(forms.ModelForm):
