@@ -5,15 +5,17 @@
 
 <div class="home-container">
   <!-- 左側：残り時間 -->
-  <div class="time-box">
+  <div class="time-box" data-lifespan-end="{{ lifespan_end }}">
     <h2>あなたに残された時間</h2>
+    <p>Debug: lifespan_end = {{ lifespan_end }}</p> <!-- デバッグ表示 -->
       <div class="countdown">
-        <span id="days">10000日</span>
+        <span id="day">{{ remaining_days }}</span>日
       </div>
+    
     <div class="countdown-small-container">
-      <div class="countdown-small"><span id="hours">hh</span>日</div>
-      <div class="countdown-small"><span id="minutes">mm</span>分</div>
-      <div class="countdown-small"><span id="seconds">ss</span>秒</div>
+      <div class="countdown-small"><span id="hour"></span>時</div>
+      <div class="countdown-small"><span id="minute"></span>分</div>
+      <div class="countdown-small"><span id="second"></span>秒</div>
     </div>
   </div>
 
