@@ -1,11 +1,17 @@
+// ユーザー情報を取得
+const user = "{{user.lifespan_end_date}}";
+console.log(user);
+
 console.log("home.js is loaded!");
 // 寿命カウントダウン
-function showRestTime() {
-  console.log("showRestTime is running");
-
+function showRestTime(user) {
+  console.log(user);
+  console.log("ああああ！");
   const now = new Date(); //現在時刻を取得する
-  const lifespan_end = new Date(2050, 0, 1);
-  // const timeBox = document.querySelector(".time-box");
+  // const lifespan_end = new Date(2050, 0, 1);
+  const lifespan_end_str =
+    document.querySelector("div.time-box").dataset.lifespanEnd;
+  const lifespan_end = new Date(lifespan_end_str);
 
   console.log("lifespan_end:", lifespan_end);
 
