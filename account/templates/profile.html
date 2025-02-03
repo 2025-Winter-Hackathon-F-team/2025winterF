@@ -15,8 +15,8 @@
     {% else %}
       未設定
     {% endif %}
-    {% if user.birthday and user.deathday %}
-      {{ user.deathday|date:"Y/m/d" }} - {{ user.birthday|date:"Y/m/d" }}
+    {% if user.birth_date and user.lifespan_end_date %}
+      {{ user.lifespan_end_date|date:"Y/m/d" }} - {{ user.birth_date|date:"Y/m/d" }}
     {% endif %}
   </p>
 </body>

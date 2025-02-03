@@ -15,11 +15,11 @@ class Todos(models.Model):
     ]
 
     # FK: month_goal_id INT NOT NULL
-    month_goal = models.ForeignKey(MonthGoal, on_delete=models.CASCADE)
+    month_goal = models.ForeignKey(MonthGoal, null=False, on_delete=models.CASCADE)
     # title VARCHAR(50) NOT NULL
-    title = models.CharField(max_length=50, verbose_name="日々のタスクを入力してください")
+    title = models.CharField(max_length=50, null=False, verbose_name="日々のタスクを入力してください")
     # status PositiveSmallIntegerField NOT NULL DEFAULT 0
-    status = models.PositiveSmallIntegerField(choices=STATUS_CHOICES, default=STATUS_UNACHIEVED,  verbose_name="達成状況")
+    status = models.PositiveSmallIntegerField(choices=STATUS_CHOICES, null=False, default=STATUS_UNACHIEVED,  verbose_name="達成状況")
     # created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="作成日時")
     # updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP

@@ -35,8 +35,8 @@ class SetupView(LoginRequiredMixin, UpdateView):
             # プロフィール情報を更新
             self.get_object().update_profile_initial(
                 name=form.cleaned_data["name"],
-                birthday=form.cleaned_data["birthday"],
-                deathday=form.cleaned_data["deathday"],
+                birth_date=form.cleaned_data["birth_date"],
+                lifespan_end_date=form.cleaned_data["lifespan_end_date"],
             )
             return super().form_valid(form)
         except ValidationError as e:
