@@ -12,13 +12,13 @@ class SetupForm(forms.ModelForm):
         label="あなたの名前",
         required=True
     )
-    birthday = forms.DateField(
+    birth_date = forms.DateField(
         label="誕生日",
         widget=forms.DateInput(attrs={"type": "date"}),
         required=True
     )
     # IntegerField で寿命を受け取る
-    deathday = forms.IntegerField(
+    lifespan_end_date = forms.IntegerField(
         label="何歳まで生きたい？",
         required=False,
         min_value=1,
@@ -28,7 +28,7 @@ class SetupForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ("name", "birthday", "deathday")
+        fields = ("name", "birth_date", "lifespan_end_date")
 
     def clean(self):
         """
@@ -40,49 +40,49 @@ class SetupForm(forms.ModelForm):
         """
         cleaned_data = super().clean()
         name = cleaned_data.get("name")
-        birthday = cleaned_data.get("birthday")
-        lifetime = cleaned_data.get("deathday")
+        birth_date = cleaned_data.get("birth_date")
+        lifetime = cleaned_data.get("lifespan_end_date")
 
         # 名前のバリデーション
         if not name:
             self.add_error("name", "お名前を入力してください。")
 
         # 誕生日のバリデーション
-        if not birthday:
-            self.add_error("birthday", "誕生日を入力してください。")
-        elif birthday > date.today():
-            self.add_error("birthday", "誕生日は未来の日付に設定できません。")
+        if not birth_date:
+            self.add_error("birth_date", "誕生日を入力してください。")
+        elif birth_date > date.today():
+            self.add_error("birth_date", "誕生日は未来の日付に設定できません。")
 
         # 寿命の入力が小数の場合
         if lifetime is not None and lifetime % 1 != 0:
-            self.add_error("deathday", "寿命は整数で入力してください。")
+            self.add_error("lifespan_end_date", "寿命は整数で入力してください。")
 
         # 寿命のバリデーション
         if lifetime:
             if lifetime <= 0:
-                self.add_error("deathday", "寿命は正の整数で入力してください。")
+                self.add_error("lifespan_end_date", "寿命は正の整数で入力してください。")
             elif lifetime > 120:
-                self.add_error("deathday", "寿命は120歳以下で入力してください。")
+                self.add_error("lifespan_end_date", "寿命は120歳以下で入力してください。")
             if lifetime <= 0:
-                self.add_error("deathday", "寿命は正の整数で入力してください。")
+                self.add_error("lifespan_end_date", "寿命は正の整数で入力してください。")
             else:
                 try:
                     # ユーザーが入力した年齢を誕生日に加算して死亡日を計算
-                    calculated_deathday = date(
-                        birthday.year + lifetime,
-                        birthday.month,
-                        birthday.day
+                    calculated_lifespan_end_date = date(
+                        birth_date.year + lifetime,
+                        birth_date.month,
+                        birth_date.day
                     )
-                    if calculated_deathday <= date.today():
-                        self.add_error("deathday", "寿命の年齢は現在より未来の年齢に設定してください。")
+                    if calculated_lifespan_end_date <= date.today():
+                        self.add_error("lifespan_end_date", "寿命の年齢は現在より未来の年齢に設定してください。")
                     else:
                         # cleaned_data を直接変更せず、新しい辞書を返す
-                        return {**cleaned_data, "deathday": calculated_deathday}
+                        return {**cleaned_data, "lifespan_end_date": calculated_lifespan_end_date}
                 except ValueError as e:
                     # 無効な日付計算の場合（例: うるう年など）
-                    print(f"Error calculating deathday: {e}")
-                    self.add_error("deathday", "寿命の計算に失敗しました。誕生日と寿命の入力を再確認してください。")
+                    print(f"Error calculating lifespan_end_date: {e}")
+                    self.add_error("lifespan_end_date", "寿命の計算に失敗しました。誕生日と寿命の入力を再確認してください。")
         else:
             # 寿命が未入力の場合、デフォルト値を設定
-            cleaned_data["deathday"] = None
+            cleaned_data["lifespan_end_date"] = None
         return cleaned_data

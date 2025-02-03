@@ -28,13 +28,13 @@ class ProfileView(LoginRequiredMixin, DetailView):
         user = self.object
         # ユーザーの年齢と寿命を計算
         context["age"] = (
-            relativedelta(date.today(), user.birthday).years
-            if user.birthday
+            relativedelta(date.today(), user.birth_date).years
+            if user.birth_date
             else None
         )
         context["life_span"] = (
-            relativedelta(user.deathday, user.birthday).years
-            if user.birthday and user.deathday
+            relativedelta(user.lifespan_end_date, user.birth_date).years
+            if user.birth_date and user.lifespan_end_date
             else None
         )
 
