@@ -1,10 +1,12 @@
 from django.contrib import admin
 from django.urls import path
-from .views import HomeView
+from .views import HomeView, CreateYearGoalView
+from .views import CreateYearGoalView
 
 # 名前空間を設定
-app_name = 'goal'
+app_name = "goal"
 
 urlpatterns = [
+    path("year_goal/", CreateYearGoalView.as_view(), name="year_goal"),
     path("", HomeView.as_view(), name="home"),
 ]
