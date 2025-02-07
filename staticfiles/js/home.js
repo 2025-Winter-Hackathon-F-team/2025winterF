@@ -12,8 +12,6 @@ console.log("ユーザーの寿命終了日:", lifespanEnd);
 
 // 寿命カウントダウン
 function showRestTime() {
-  // console.log(user);
-  // console.log("ああああ！");
   const now = new Date(); //現在時刻を取得する
   // const lifespan_end = new Date(2050, 0, 1);
   const lifespan_end_str = lifespanEnd;
