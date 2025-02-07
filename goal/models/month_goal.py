@@ -44,13 +44,13 @@ class MonthGoal(models.Model):
     ]
 
     # FK: year_goal_id INT NOT NULL
-    year_goal = models.ForeignKey(YearGoal, on_delete=models.CASCADE, verbose_name="年目標")
+    year_goal = models.ForeignKey(YearGoal, null=False, on_delete=models.CASCADE, verbose_name="年目標")
     # month PositiveSmallIntegerField NOT NULL
-    month = models.PositiveSmallIntegerField(choices=MONTH_CHOICES, verbose_name="月")
-    # title VARCHAR(50) NOT NULL
-    title = models.CharField(max_length=50, verbose_name="月の目標を入力してください")
+    month = models.PositiveSmallIntegerField(choices=MONTH_CHOICES, null=False, verbose_name="月")
+    # title VARCHAR(50) Default NULL
+    title = models.CharField(max_length=50, blank=True, null=True, verbose_name="月の目標を入力してください")
     # status PositiveSmallIntegerField NOT NULL DEFAULT 0
-    status = models.PositiveSmallIntegerField(choices=STATUS_CHOICES, default=STATUS_UNACHIEVED, verbose_name="達成状況")
+    status = models.PositiveSmallIntegerField(choices=STATUS_CHOICES, null=False, default=STATUS_UNACHIEVED, verbose_name="達成状況")
     # created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="作成日時")
     # updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP

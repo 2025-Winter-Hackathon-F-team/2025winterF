@@ -33,8 +33,9 @@ class CustomUserManager(BaseUserManager):
 class User(AbstractBaseUser):
     email = models.EmailField(max_length=254, unique=True, null=False)
     name = models.CharField(max_length=64, blank=True, null=True)
-    birthday = models.DateField(blank=True, null=True)
-    deathday = models.DateField(blank=True, null=True)
+    birth_date = models.DateField(blank=True, null=True)
+    lifespan_end_date = models.DateField(blank=True, null=True)
+    is_first_login = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -52,13 +53,13 @@ class User(AbstractBaseUser):
     def __str__(self):
         return self.email
 
-    def update_profile_initial(self, name, birthday, deathday):
+    def update_profile_initial(self, name, birth_date, lifespan_end_date):
         """
         ユーザー情報を初回更新するためのメソッド。
         Args:
             name (str): ユーザーの名前。
-            birthday (date): ユーザーの誕生日 (datetime.date オブジェクト)。
-            deathday (date): ユーザーの命日 (datetime.date オブジェクト)。
+            birth_date (date): ユーザーの誕生日 (datetime.date オブジェクト)。
+            lifespan_end_date (date): ユーザーの命日 (datetime.date オブジェクト)。
         Returns:
             User: 更新されたユーザーオブジェクト。
         Raises:
@@ -69,8 +70,8 @@ class User(AbstractBaseUser):
         try:
             # ユーザーオブジェクトの属性を更新
             self.name = name
-            self.birthday = birthday
-            self.deathday = deathday
+            self.birth_date = birth_date
+            self.lifespan_end_date = lifespan_end_date
             # データベースに保存
             self.save()
             print(f"User {self.id} profile updated successfully.")

@@ -14,7 +14,7 @@ class Message(models.Model):
     # message TEXT NOT NULL
     message = models.TextField(verbose_name="メッセージ内容")
     # message_type PositiveSmallIntegerField NOT NULL
-    message_type = models.PositiveSmallIntegerField(choices=TYPE_CHOICES, verbose_name="メッセージタイプ")
+    type = models.PositiveSmallIntegerField(choices=TYPE_CHOICES, verbose_name="メッセージタイプ")
     # created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="作成日時")
     # updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP

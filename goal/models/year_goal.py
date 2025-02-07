@@ -20,15 +20,13 @@ class YearGoal(models.Model):
     STATUS_CHOICES = [(STATUS_UNACHIEVED, "未達"), (STATUS_ACHIEVED, "達成")]
 
     # FK: user_id INT NOT NULL
-    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="ユーザー")
+    user = models.ForeignKey(User, null=False, on_delete=models.CASCADE, verbose_name="ユーザー")
     # year DATE NOT NULL 年の初日をデフォルト値として設定
-    year = models.DateField(default=default_year_start, verbose_name="年目標")
+    year = models.DateField(null=False, default=default_year_start, verbose_name="年目標")
     # title VARCHAR(50) NOT NULL
-    title = models.CharField(max_length=50, verbose_name="年間目標を入力してください")
+    title = models.CharField(max_length=50, null=False, verbose_name="年間目標を入力してください")
     # status PositiveSmallIntegerField NOT NULL DEFAULT 0
-    status = models.PositiveSmallIntegerField(
-        choices=STATUS_CHOICES, default=STATUS_UNACHIEVED, verbose_name="達成状況"
-    )
+    status = models.PositiveSmallIntegerField(choices=STATUS_CHOICES, null=False, default=STATUS_UNACHIEVED, verbose_name="達成状況")
     # created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="作成日時")
     # updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
