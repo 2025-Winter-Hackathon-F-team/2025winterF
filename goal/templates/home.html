@@ -5,9 +5,8 @@
 
 <div class="home-container">
   <!-- 左側：残り時間 -->
-  <div class="time-box" data-lifespan-end="{{ lifespan_end }}">
+  <div class="time-box" id="user-data" data-lifespan-end="{{ user.lifespan_end_date | date:'Y-m-d' }}">
     <h2>あなたに残された時間</h2>
-    <p>Debug: lifespan_end = {{ lifespan_end }}</p> <!-- デバッグ表示 -->
       <div class="countdown">
         <span id="day">{{ remaining_days }}</span>日
       </div>
@@ -62,6 +61,8 @@
   </div>
 </div>
 
-{% endblock content %} {% block script %}
-<script src="{% static 'js/home.js' %}"></script>
+{% endblock content %}
+{% block script %}
+<script src="{% static 'js/home.js' %}">
+</script>
 {% endblock script %}
