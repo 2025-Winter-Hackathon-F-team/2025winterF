@@ -135,3 +135,24 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# ログの設定（開発用）
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters":{
+        "simple":{
+            "format":"%(asctime)s %(levelname)s [%(pathname)s:%(lineno)s] %(message)s",
+        }
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "simple",
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "DEBUG",
+    },
+}
