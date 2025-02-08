@@ -1,5 +1,10 @@
-from django.db import models
+import datetime
+from django.db import DatabaseError, models
 from .year_goal import YearGoal
+
+import logging
+
+logger = logging.getLogger(__name__)
 
 # month_goalsテーブルの作成
 class MonthGoal(models.Model):
@@ -65,3 +70,24 @@ class MonthGoal(models.Model):
     def __str__(self):
         year_goal_title = getattr(self.year_goal, 'title', 'Unknown Title')
         return f"{year_goal_title} - {self.title} ({self.month}月)"
+
+    @classmethod
+    def create_month_goal(cls, month, year_goal_id):
+        try:
+            _, created = cls.objects.get_or_create(month=month, year_goal_id=year_goal_id)
+            if created:
+                logger.debug(f"Created goal for {month} in YearGoal ID: {year_goal_id}")
+            else:
+                logger.debug(f"Goal for {month} already exists in YearGoal ID: {year_goal_id}")
+        except DatabaseError as e:
+            # データベースエラーの内容を出力
+            logger.error(f"Database error occurred while creating goal for {month} in YearGoal ID: {year_goal_id}. Error: {str(e)}")
+        except Exception as e:
+            # その他のエラー内容を出力
+            logger.exception(f"Unexpected error occurred while creating goal for {month} in YearGoal ID: {year_goal_id}.")
+
+    @classmethod
+    def create_monthly_goals_for_year(cls, year_goal_id):
+        current_month = datetime.datetime.now().month
+        for month in range(current_month, 13):
+            cls.create_month_goal(month, year_goal_id)
