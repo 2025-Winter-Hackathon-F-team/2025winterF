@@ -16,6 +16,8 @@ class LoginView(LoginView):
         user = self.request.user
 
         if user.is_first_login:
+            # 初回ログインフラグを更新（この処理で is_first_login を False にする）
+            user.update_first_login()
             # 初回ログイン時は設定画面へリダイレクト
             return reverse_lazy("account:setup")
         else:
