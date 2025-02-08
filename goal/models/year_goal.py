@@ -3,10 +3,12 @@ from django.utils import timezone
 import datetime
 from account.models import User
 
+
 # 現在の年の初日をデフォルト値として返す関数
 def default_year_start():
     current_year = timezone.now().year
     return datetime.date(current_year, 1, 1)
+
 
 # year_goalsテーブルの作成
 class YearGoal(models.Model):
@@ -15,10 +17,7 @@ class YearGoal(models.Model):
     STATUS_ACHIEVED = 1
 
     # statusフィールドの選択肢 (DB保存値, 表示文字列)
-    STATUS_CHOICES = [
-        (STATUS_UNACHIEVED, "未達"),
-        (STATUS_ACHIEVED, "達成")
-    ]
+    STATUS_CHOICES = [(STATUS_UNACHIEVED, "未達"), (STATUS_ACHIEVED, "達成")]
 
     # FK: user_id INT NOT NULL
     user = models.ForeignKey(User, null=False, on_delete=models.CASCADE, verbose_name="ユーザー")
@@ -34,10 +33,17 @@ class YearGoal(models.Model):
     updated_at = models.DateTimeField(auto_now=True, verbose_name="更新日時")
 
     class Meta:
-        db_table="year_goals"
-        verbose_name="年目標"
-        verbose_name_plural="年目標一覧"
+        db_table = "year_goals"
+        verbose_name = "年目標"
+        verbose_name_plural = "年目標一覧"
 
     def __str__(self):
-        user_email = getattr(self.user, 'email', 'Unknown Email')
+        user_email = getattr(self.user, "email", "Unknown Email")
         return f"{self.year.year} - {self.title} ({user_email})"
+
+    # 目標の作成メソッド
+    def create(self, user, year, title):
+        self.user = user
+        self.year = year
+        self.title = title
+        self.save()
