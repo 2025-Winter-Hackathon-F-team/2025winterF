@@ -47,3 +47,5 @@ class YearGoal(models.Model):
         self.year = year
         self.title = title
         self.save()
+        # 保存後にインスタンスを返す
+        return self
