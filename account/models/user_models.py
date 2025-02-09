@@ -2,6 +2,9 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError, DatabaseError, models
+import logging
+
+logger = logging.getLogger(__name__)
 
 class CustomUserManager(BaseUserManager):
 
@@ -88,3 +91,18 @@ class User(AbstractBaseUser):
             # その他のエラー内容を出力
             print(f"Unexpected error updating profile for user {self.id}: {e}")
             raise
+
+    def update_first_login(self):
+        """
+        初回ログインフラグを更新するメソッド。
+        """
+        try:
+            self.is_first_login = 0
+            self.save()
+            logger.info(f"User {self.id}: Successfully updated first login flag.")
+        except DatabaseError as e:
+            # データベースエラーの内容を出力
+            logger.error(f"Database error updating profile for user {self.id}: {e}")
+        except Exception as e:
+            # その他のエラー内容を出力
+            logger.exception(f"Unexpected error updating profile for user {self.id}: {e}")
