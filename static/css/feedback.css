@@ -1,8 +1,8 @@
 @charset "utf-8";
 @import url("https://fonts.googleapis.com/css2?family=Kaisei+Opti:wght@400;700&display=swap");;
 
-html, body {
-    height: 100%;
+html {
+    height: 100svh;
     margin: 0;
     padding: 0;
 }
@@ -10,13 +10,12 @@ html, body {
 body {
     background: url("../images/feedback.jpeg") no-repeat center center/cover;
     background-attachment: fixed;
+    background-size: cover;
     color: #454749;
     font-family: "Kaisei Opti", serif;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
+    min-height: 100svh;
     padding: 20px;
+    overflow: hidden; /* 溢れた画像を切り取って非表示=>スクロールを防ぐ */
 }
 
 /* 全体レイアウト */
@@ -25,6 +24,7 @@ body {
     align-items: center;
     justify-content: center;
     margin: auto;
+    min-height: 100svh;
 }
 
 .message-box {
