@@ -5,12 +5,14 @@
 
 <div class="home-container">
   <!-- 左側：残り時間 -->
-  <div class="time-box" id="user-data" data-lifespan-end="{{ user.lifespan_end_date | date:'Y-m-d' }}">
+  <div
+    class="time-box"
+    id="user-data"
+    data-lifespan-end="{{ user.lifespan_end_date | date:'Y-m-d' }}"
+  >
     <h2>あなたに残された時間</h2>
-      <div class="countdown">
-        <span id="day">{{ remaining_days }}</span>日
-      </div>
-    
+    <div class="countdown"><span id="day">{{ remaining_days }}</span>日</div>
+
     <div class="countdown-small-container">
       <div class="countdown-small"><span id="hour"></span>時間</div>
       <div class="countdown-small"><span id="minute"></span>分</div>
@@ -23,16 +25,20 @@
     <h2>目標</h2>
     <div class="goal-list">
       <div class="goal-item">
-        <h3>今年の目標</h3>
-        <p>目標の内容</p>
-        <button class="goal-detail">詳細</button>
-        <button class="goal-complete">達成</button>
+        <h3>{{ year_goal.year|date:"Y" }}年の目標</h3>
+        <p>{{ year_goal.title }}</p>
+        <div class="goal-buttons">
+          <button class="goal-detail">詳細</button>
+          <button class="goal-complete">達成</button>
+        </div>
       </div>
       <div class="goal-item">
         <h3>今月の目標</h3>
         <p>目標の内容</p>
-        <button class="goal-detail">詳細</button>
-        <button class="goal-complete">達成</button>
+        <div class="goal-buttons">
+          <button class="goal-detail">詳細</button>
+          <button class="goal-complete">達成</button>
+        </div>
       </div>
     </div>
   </div>
@@ -43,11 +49,15 @@
     <div class="todo-list">
       <div class="todo-item">
         <p>やることの内容</p>
-        <button class="todo-complete">達成</button>
+        <div class="todo-buttons">
+          <button class="todo-complete">達成</button>
+        </div>
       </div>
       <div class="todo-item">
         <p>やることの内容</p>
-        <button class="todo-complete">達成</button>
+        <div class="todo-buttons">
+          <button class="todo-complete">達成</button>
+        </div>
       </div>
     </div>
   </div>
@@ -61,8 +71,6 @@
   </div>
 </div>
 
-{% endblock content %}
-{% block script %}
-<script src="{% static 'js/home.js' %}">
-</script>
+{% endblock content %} {% block script %}
+<script src="{% static 'js/home.js' %}"></script>
 {% endblock script %}
