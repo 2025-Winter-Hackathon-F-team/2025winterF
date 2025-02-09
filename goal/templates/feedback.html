@@ -10,6 +10,14 @@
     <p>{{ default_message }}</p>
     {% endif %}
   </div>
+
+  <!-- ホームボタン -->
+  <div class="home">
+    <form method="get" action="{% url 'goal:home' %}">
+      {% csrf_token %}
+      <button type="submit" class="home-button">Home</button>
+    </form>
+  </div>
 </div>
 {% endblock content %} {% block script %}
 <!-- <script src="{% static 'js/feedback.js' %}">

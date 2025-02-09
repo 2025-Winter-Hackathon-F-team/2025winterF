@@ -1,13 +1,9 @@
 from django.shortcuts import render
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
-import logging
+
 
 from ..models import Message
-
-logger = logging.getLogger(__name__)
-logger.warning("危ない")
-
 
 class FeedbackView(LoginRequiredMixin, TemplateView):
     template_name = "feedback.html"
