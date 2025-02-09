@@ -60,6 +60,7 @@ body {
     align-items: center;
     padding: 10px;
     gap: 10px;
+    margin: 10px;
 }
 
 /* 擬似要素で枠線のグラデーションを適用 */
@@ -73,6 +74,19 @@ body {
     border-radius: 5px;
     z-index: -1;
     background: linear-gradient(to right, #E5D99B, #E09344);
+}
+
+/* 擬似要素で枠線のグラデーションを適用 */
+.goal-new-item::before {
+    content: "";
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    right: -4px;
+    bottom: -4px;
+    border-radius: 5px;
+    z-index: -1;
+    background: linear-gradient(to right, #8BABAB, #3C6C76);
 }
 
 /* 小さいカウントダウンボックスの横並び */
@@ -104,9 +118,23 @@ body {
     min-height: 100px;
     display: flex;
     flex-direction: column;
+    margin: 10px;
 }
 
-.goal-detail, .goal-complete, .todo-complete {
+.goal-new-item {
+    background: gray;
+    color: #ffffff;
+    padding: 10px;
+    border-radius: 5px;
+    text-align: left;
+    position: relative;
+    min-height: 100px;
+    display: flex;
+    flex-direction: column;
+    margin: 10px;
+}
+
+.goal-detail, .goal-complete, .goal-create, .todo-complete {
     position: relative;
     background-color: transparent;
     padding: 5px 10px;
@@ -137,6 +165,13 @@ body {
     border-radius: 10px;
 }
 
+.goal-create {
+    border: 1px solid #3C6C76;
+    color: #3C6C76;
+    border-radius: 10px;
+    background: #ffffff90; /* 下２桁は不透明度 */
+}
+
 .todo-buttons {
     display: flex;
     justify-content: flex-end;
@@ -150,35 +185,13 @@ body {
     border-radius: 10px;
 }
 
-
-/* .goal-detail::before {
-    content: "";
-    position: absolute;
-    top: -4px;
-    left: -4px;
-    right: -4px;
-    bottom: -4px;
-    border-radius: 5px;
-    z-index: 0;
-    background: linear-gradient(to right, #7DBBDC, #507FA9);
-}
-
-.goal-complete::before, .todo-complete::before {
-    content: "";
-    position: absolute;
-    top: -4px;
-    left: -4px;
-    right: -4px;
-    bottom: -4px;
-    border-radius: 5px;
-    z-index: 0;
-    background: linear-gradient(to right, #E09344, #BB3A1E);
-} */
-
-.logout-button {
-    position: absolute;
+.logout {
+    position: fixed;
     top: 10px;
     right: 10px;
+}
+
+.logout-button {
     padding: 5px 10px;
     background-color: transparent;
     border: 1px solid #E5D99B;

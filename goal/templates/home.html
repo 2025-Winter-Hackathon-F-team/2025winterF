@@ -24,6 +24,7 @@
   <div class="goal-box">
     <h2>目標</h2>
     <div class="goal-list">
+      {% if year_goal %}
       <div class="goal-item">
         <h3>{{ year_goal.year|date:"Y" }}年の目標</h3>
         <p>{{ year_goal.title }}</p>
@@ -32,6 +33,18 @@
           <button class="goal-complete">達成</button>
         </div>
       </div>
+      {% else %}
+      <div class="goal-new-item">
+        <h3>今年の目標がまだありません</h3>
+        <p>新しい目標を作成しましょう！</p>
+        <form method="post" action="{% url 'goal:create_year_goal' %}">
+          {% csrf_token %}
+          <div class="goal-buttons">
+            <button type="submit" class="goal-create">新規</button>
+          </div>
+        </form>
+      </div>
+      {% endif %}
       <div class="goal-item">
         <h3>今月の目標</h3>
         <p>目標の内容</p>
