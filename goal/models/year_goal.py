@@ -1,12 +1,12 @@
-from django.db import models
-from django.utils import timezone
 import datetime
-from account.models import User
-
 import logging
 
-logger = logging.getLogger(__name__)
+from django.db import models
+from django.utils import timezone
 
+from account.models import User
+
+logger = logging.getLogger(__name__)
 
 # 現在の年の初日をデフォルト値として返す関数
 def default_year_start():
@@ -67,3 +67,28 @@ class YearGoal(models.Model):
         """
         current_year = timezone.now().year
         return cls.objects.filter(user=user, year__year=current_year).first()
+
+    @classmethod
+    def get_year_goal_for_user(cls, user, year):
+        """
+        指定されたユーザーの特定の年の年目標を取得する
+        Args:
+            user (User): 目標を取得する対象のユーザー
+            year (datetime.date): 目標を取得する年
+        Returns:
+            YearGoal or None: 該当する年目標が存在すれば YearGoal インスタンスを返し、存在しなければ None を返す
+        """
+        try:
+            return cls.objects.get(user=user, year=year)
+        except cls.DoesNotExist:
+            # 目標が設定されていない場合、ログに記録して None を返す
+            logger.warning(f"[YearGoal] Not found: user_id={user.id}, year={year}")
+            return None
+        except cls.MultipleObjectsReturned:
+            # データの整合性エラー（1つの年に複数の目標が存在する）
+            logger.error(f"[YearGoal] Data integrity issue: Multiple entries found for user_id={user.id}, year={year}")
+            return None
+        except Exception as e:
+            # 予期しないエラーのキャッチ
+            logger.exception(f"[YearGoal] Unexpected error: user_id={user.id}, year={year}, error={e}")
+            return None

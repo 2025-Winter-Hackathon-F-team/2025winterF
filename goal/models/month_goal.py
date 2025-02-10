@@ -1,8 +1,9 @@
 import datetime
-from django.db import DatabaseError, models
-from .year_goal import YearGoal
-
 import logging
+
+from django.db import models, DatabaseError
+
+from .year_goal import YearGoal
 
 logger = logging.getLogger(__name__)
 
@@ -116,3 +117,34 @@ class MonthGoal(models.Model):
                 logger.error(f"Skipping month {month} due to database error.")
             except Exception:
                 logger.exception(f"Skipping month {month} due to unexpected error.")
+
+    @classmethod
+    def get_monthly_goals_for_year(cls, year_goal_id):
+        """
+        指定された YearGoal に対して、すべての月目標を取得しリストとして返す
+        Args:
+            year_goal_id (int): 年目標の主キー
+        Returns:
+            list: 月目標のリスト（辞書形式）
+        """
+        try:
+            monthly_goals = cls.objects.filter(year_goal=year_goal_id).order_by('month')
+        except DatabaseError:
+            logger.error(f"Database error while fetching monthly goals for YearGoal ID {year_goal_id}.")
+            return []
+        except Exception as e:
+            logger.exception(f"Unexpected error while fetching monthly goals for YearGoal ID {year_goal_id}: {e}")
+            return []
+
+        # 月の選択肢（表示用の辞書）を取得
+        month_choices_dict = dict(cls.MONTH_CHOICES)
+
+        # 各月目標を辞書形式でリストに追加
+        return [
+            {
+                "month": month_choices_dict.get(goal.month, "N/A"),  # 月
+                "title": goal.title,  # タイトル
+                "status": goal.status,  # 状態
+            }
+            for goal in monthly_goals
+        ]
