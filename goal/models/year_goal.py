@@ -68,6 +68,7 @@ class YearGoal(models.Model):
         current_year = timezone.now().year
         return cls.objects.filter(user=user, year__year=current_year).first()
 
+    @classmethod
     def get_year_goal_for_user(cls, user, year):
         """
         指定されたユーザーの特定の年の年目標を取得する
