@@ -1,8 +1,8 @@
 @charset "utf-8";
 @import url("https://fonts.googleapis.com/css2?family=Kaisei+Opti:wght@400;700&display=swap");;
 
-html, body {
-    height: 100%;
+html {
+    height: 100svh;
     margin: 0;
     padding: 0;
 }
@@ -12,22 +12,22 @@ body {
     background-color:rgba(255,255,255,0.1);
     background-blend-mode:lighten;
     background-attachment: fixed;
+    background-size: cover;
     color: #454749;
     font-family: "Kaisei Opti", serif;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
+    min-height: 100svh;
     padding: 20px;
+    overflow: hidden; /* 溢れた画像を切り取って非表示=>スクロールを防ぐ */
 }
 
 /* 全体レイアウト */
 .home-container {
     display: flex;
     justify-content: center;
-    align-items: flex-start;
+    align-items: stretch;
     gap: 30px;
     width: 100%;
-    max-width: 1200px;
+    min-height: 100svh;
     margin: auto;
 }
 
@@ -42,7 +42,7 @@ body {
     text-align: center;
     margin-left: 20px;
     min-height: 500px; /* ボックスの最小高さを確保 */
-    height: 80%; /* ボックスの最大高さを確保 */
+    height: 85svh; /* ボックスの最大高さを確保 */
     position: relative;
     top: 50px;
 }
@@ -60,6 +60,7 @@ body {
     align-items: center;
     padding: 10px;
     gap: 10px;
+    margin: 10px;
 }
 
 /* 擬似要素で枠線のグラデーションを適用 */
@@ -73,6 +74,19 @@ body {
     border-radius: 5px;
     z-index: -1;
     background: linear-gradient(to right, #E5D99B, #E09344);
+}
+
+/* 擬似要素で枠線のグラデーションを適用 */
+.goal-new-item::before {
+    content: "";
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    right: -4px;
+    bottom: -4px;
+    border-radius: 5px;
+    z-index: -1;
+    background: linear-gradient(to right, #8BABAB, #3C6C76);
 }
 
 /* 小さいカウントダウンボックスの横並び */
@@ -102,61 +116,82 @@ body {
     text-align: left;
     position: relative;
     min-height: 100px;
+    display: flex;
+    flex-direction: column;
+    margin: 10px;
 }
 
-.goal-detail, .goal-complete, .todo-complete {
+.goal-new-item {
+    background: gray;
+    color: #ffffff;
+    padding: 10px;
+    border-radius: 5px;
+    text-align: left;
+    position: relative;
+    min-height: 100px;
+    display: flex;
+    flex-direction: column;
+    margin: 10px;
+}
+
+.goal-detail, .goal-complete, .goal-create, .todo-complete {
     position: relative;
     background-color: transparent;
     padding: 5px 10px;
     cursor: pointer;
 }
 
+.goal-item p {
+    flex-grow: 1;
+    word-break: break-word;
+}
+
+.goal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    gap: 5px;
+}
+
 .goal-detail {
-    position: absolute;
-    top: 10px;
-    right: 10px;
     border: 1px solid #507FA9;
     color: #507FA9;
     border-radius: 10px;
 }
 
-.goal-complete, .todo-complete {
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
+.goal-complete {
     border: 1px solid #BB3A1E;
     color: #BB3A1E;
     border-radius: 10px;
 }
 
-/* .goal-detail::before {
-    content: "";
-    position: absolute;
-    top: -4px;
-    left: -4px;
-    right: -4px;
-    bottom: -4px;
-    border-radius: 5px;
-    z-index: 0;
-    background: linear-gradient(to right, #7DBBDC, #507FA9);
+.goal-create {
+    border: 1px solid #3C6C76;
+    color: #3C6C76;
+    border-radius: 10px;
+    background: #ffffff90; /* 下２桁は不透明度 */
 }
 
-.goal-complete::before, .todo-complete::before {
-    content: "";
-    position: absolute;
-    top: -4px;
-    left: -4px;
-    right: -4px;
-    bottom: -4px;
-    border-radius: 5px;
-    z-index: 0;
-    background: linear-gradient(to right, #E09344, #BB3A1E);
-} */
+.todo-buttons {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    gap: 5px;
+}
 
-.logout-button {
-    position: absolute;
+.todo-complete {
+    border: 1px solid #BB3A1E;
+    color: #BB3A1E;
+    border-radius: 10px;
+}
+
+.logout {
+    position: fixed;
     top: 10px;
     right: 10px;
+}
+
+.logout-button {
     padding: 5px 10px;
     background-color: transparent;
     border: 1px solid #E5D99B;

@@ -2,12 +2,14 @@ from django.shortcuts import render
 from django.views.generic import TemplateView, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from account.models.user_models import User
+from ..models.year_goal import YearGoal
 
 
 # TODO: ホーム画面を表示するビューを作成（仮対応）
-class HomeView(LoginRequiredMixin, DetailView):
+# DetailViewからTemplateViewに変更
+class HomeView(LoginRequiredMixin, TemplateView):
     template_name = "home.html"
-    model = User
+    # model = User
 
     def get_object(self):
         """
@@ -24,4 +26,13 @@ class HomeView(LoginRequiredMixin, DetailView):
             dict: コンテキストデータ。
         """
         context = super().get_context_data(**kwargs)
+        user = self.request.user
+
+        # 今年の目標（1件のみ取得）
+        year_goal = YearGoal.get_current_year_goal(user)
+        context["year_goal"] = year_goal
+
+        # 今月の目標（1件のみ取得）
+
+        # 今月のToDo（すべて取得 & ページネーション）
         return context

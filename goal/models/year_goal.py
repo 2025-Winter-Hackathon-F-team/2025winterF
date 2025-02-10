@@ -3,6 +3,10 @@ from django.utils import timezone
 import datetime
 from account.models import User
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 # 現在の年の初日をデフォルト値として返す関数
 def default_year_start():
@@ -49,3 +53,17 @@ class YearGoal(models.Model):
         self.save()
         # 保存後にインスタンスを返す
         return self
+
+    @classmethod
+    def get_current_year_goal(cls, user):
+        """
+        YearGoal.year=現在の年となる年目標1件を取得する
+            Args:
+                user: ログインユーザー
+            Returns:
+                YearGoal.year=現在の年となる年目標1件
+                ※filter, getで使えるField lookups
+                https://zenn.dev/wtkn25/articles/django-field-lookups
+        """
+        current_year = timezone.now().year
+        return cls.objects.filter(user=user, year__year=current_year).first()
