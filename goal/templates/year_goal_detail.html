@@ -6,6 +6,25 @@
     <title>Document</title>
 </head>
 <body>
-    
+    {% if year_goal %}
+        <p>{{ year_goal.year.year }}</p>
+        <p>{{ year_goal.title }}</P>
+        <h2>月次目標</h2>
+        {% if month_goals %}
+            <ul>
+                {% for month_goal in month_goals %}
+                    {% if month_goal.title %}
+                        <li>{{ month_goal.month }}: {{ month_goal.title }}</li>
+                    {% else %}
+                        <li>{{ month_goal.month }}: 未設定</li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>未設定</p>
+        {% endif %}
+    {% else %}
+        <p>未設定</p>
+    {% endif %}
 </body>
 </html>
