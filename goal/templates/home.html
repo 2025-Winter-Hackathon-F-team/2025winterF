@@ -29,7 +29,10 @@
         <h3>{{ year_goal.year|date:"Y" }}年の目標</h3>
         <p>{{ year_goal.title }}</p>
         <div class="goal-buttons">
-          <button class="goal-detail">詳細</button>
+          <form method="get" action="{% url 'goal:year_goal_detail' %}">
+            {% csrf_token %}
+              <button type="submit" class="goal-detail">詳細</button>
+          </form>
           <button class="goal-complete">達成</button>
         </div>
       </div>
@@ -44,15 +47,21 @@
           </div>
         </form>
       </div>
-      {% endif %}
+      {% endif %} {% if month_goal %}
       <div class="goal-item">
-        <h3>今月の目標</h3>
-        <p>目標の内容</p>
+        <h3>{{ month_goal.month }}月の目標</h3>
+        <p>{{ month_goal.title }}</p>
         <div class="goal-buttons">
           <button class="goal-detail">詳細</button>
           <button class="goal-complete">達成</button>
         </div>
       </div>
+      {% else %}
+      <div class="goal-new-item">
+        <h3>今月の目標がまだありません</h3>
+        <p>まずは年目標を作成しましょう！</p>
+      </div>
+      {% endif %}
     </div>
   </div>
 
@@ -61,6 +70,7 @@
     <h2>やるべきこと</h2>
     <div class="todo-list">
       <div class="todo-item">
+        <h3>""</h3>
         <p>やることの内容</p>
         <div class="todo-buttons">
           <button class="todo-complete">達成</button>
