@@ -1,8 +1,9 @@
 import datetime
 import logging
 
-from django.db import models
+from django.db import models, DatabaseError
 from django.utils import timezone
+from django.core.exceptions import ValidationError
 
 from account.models import User
 
@@ -53,6 +54,33 @@ class YearGoal(models.Model):
         self.save()
         # 保存後にインスタンスを返す
         return self
+
+    def update_title(self, newTitle):
+        """
+        目標のタイトルを更新するメソッド
+        Args:
+            newTitle (str): 更新後のタイトル
+        Raises:
+            ValidationError: バリデーションエラーが発生した場合
+            DatabaseError: データベースエラーが発生した場合
+            Exception: その他の予期しないエラーが発生した場合
+        """
+        try:
+            self.title = newTitle
+            self.full_clean()
+            self.save()
+        except ValidationError as e:
+            # バリデーションエラーの内容を出力
+            logger.exception(f"Validation error updating year_goal: {self.id} for user {self.user.id}: {e}")
+            raise
+        except DatabaseError as e:
+            # データベースエラーの内容を出力
+            logger.exception(f"Database error updating year_goal: {self.id} for user {self.user.id}: {e}")
+            raise
+        except Exception as e:
+            # その他のエラー内容を出力
+            logger.exception(f"Unexpected error updating year_goal: {self.id} for user {self.user.id}: {e}")
+            raise
 
     @classmethod
     def get_current_year_goal(cls, user):

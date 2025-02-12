@@ -8,7 +8,18 @@
 <body>
     {% if year_goal %}
         <p>{{ year_goal.year.year }}</p>
-        <p>{{ year_goal.title }}</P>
+        <!-- 表示モード -->
+        <div id="year-goal-display">
+            <span id="year-goal-text">{{ year_goal.title }}</span>
+            <button onclick="toggleEdit()">編集</button>
+        </div>
+        <!-- 編集モード（非表示） -->
+        <div id="year-goal-form" style="display: none;">
+            <input type="text" id="goal-input" value="{{ year_goal.title }}">
+            <button onclick="saveGoal({{ year_goal.year.year }})">保存</button>
+            <button onclick="toggleEdit()">キャンセル</button>
+            <p id="error-message" style="color: red;"></p> <!-- エラー表示用 -->
+        </div>
         <h2>月次目標</h2>
         {% if month_goals %}
             <ul>
@@ -27,4 +38,47 @@
         <p>未設定</p>
     {% endif %}
 </body>
+<script>
+    function toggleEdit() {
+        let displayDiv = document.getElementById("year-goal-display");
+        let formDiv = document.getElementById("year-goal-form");
+
+        if (displayDiv.style.display === "none") {
+            displayDiv.style.display = "block";
+            formDiv.style.display = "none";
+        } else {
+            displayDiv.style.display = "none";
+            formDiv.style.display = "block";
+        }
+    }
+
+    function saveGoal(year) {
+        let newTitle = document.getElementById("goal-input").value;
+
+        fetch(`/goal/year_goal/${year}/edit/`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": "{{ csrf_token }}"
+            },
+            body: JSON.stringify({ title: newTitle, year: year })
+        })
+        .then(response => response.json().then(data => ({ status: response.status, body: data })))
+        .then(({ status, body }) => {
+            if (status === 200) {
+                console.log('Success:', body.message);
+                document.getElementById("year-goal-text").textContent = newTitle;
+                document.getElementById("error-message").textContent = "";
+                toggleEdit();
+            } else {
+                // バリデーションエラーを投げる
+                throw body.error;
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById("error-message").textContent = error.title ? error.title.join(", ") : "保存に失敗しました";
+        });
+    }
+</script>
 </html>
