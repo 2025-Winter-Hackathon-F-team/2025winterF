@@ -33,3 +33,18 @@ class Todos(models.Model):
     def __str__(self):
         month_goal_title = getattr(self.month_goal, 'title', 'Unknown Title')
         return f"{month_goal_title} - {self.title}"
+
+    @classmethod
+    def get_current_month_todos(cls, user):
+        """
+        現在の月のToDoを全件取得
+        Args:
+            user: ログインユーザー
+        Returns:
+            QuerySet: 今月のToDoリスト
+        """
+        month_goal = MonthGoal.get_current_month_goal(user)
+
+        if month_goal is None:
+            return None
+        return cls.objects.filter(month_goal=month_goal).order_by("created_at")
