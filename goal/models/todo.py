@@ -46,5 +46,5 @@ class Todos(models.Model):
         month_goal = MonthGoal.get_current_month_goal(user)
 
         if month_goal is None:
-            return None
+            return cls.objects.none()
         return cls.objects.filter(month_goal=month_goal).order_by("created_at")
