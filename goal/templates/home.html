@@ -83,6 +83,25 @@
       {% endfor %}
   </div>
 
+  <!-- ページネーション -->
+  <div class="pagination">
+    <span class="step-links">
+        {% if todos.has_previous %}
+            <a href="?page=1">&laquo; 最初へ</a>
+            <a href="?page={{ todos.previous_page_number }}">前へ</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ todos.number }} of {{ todos.paginator.num_pages }}.
+        </span>
+
+        {% if todos.has_next %}
+            <a href="?page={{ todos.next_page_number }}">次へ</a>
+            <a href="?page={{ todos.paginator.num_pages }}">最後へ &raquo;</a>
+        {% endif %}
+    </span>
+  </div>
+
   <div class="logout">
     <!-- ログアウトボタン -->
     <form method="post" action="{% url 'account:logout' %}">
