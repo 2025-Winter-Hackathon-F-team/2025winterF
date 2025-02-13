@@ -2,6 +2,7 @@ import datetime
 import logging
 
 from django.db import models, DatabaseError
+from django.utils import timezone
 
 from .year_goal import YearGoal
 
@@ -148,3 +149,23 @@ class MonthGoal(models.Model):
             }
             for goal in monthly_goals
         ]
+
+    @classmethod
+    def get_current_month_goal(cls, user):
+        """
+        YearGoal.year=現在の年となる年目標1件を取得する
+        MonthGoal.month=現在の月となる月目標1件を取得する
+            Args:
+                user: ログインユーザー
+            Returns:
+                MonthGoal.year=現在の月となる月目標1件
+        """
+        current_month = timezone.now().month
+
+        year_goal = YearGoal.get_current_year_goal(user)
+
+        if year_goal is None :
+            return None
+        return cls.objects.filter(
+            year_goal=year_goal, month=current_month
+        ).first()

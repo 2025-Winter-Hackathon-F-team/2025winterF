@@ -3,6 +3,7 @@ from django.views.generic import TemplateView, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from account.models.user_models import User
 from ..models.year_goal import YearGoal
+from ..models.month_goal import MonthGoal
 
 
 # TODO: ホーム画面を表示するビューを作成（仮対応）
@@ -33,6 +34,8 @@ class HomeView(LoginRequiredMixin, TemplateView):
         context["year_goal"] = year_goal
 
         # 今月の目標（1件のみ取得）
+        month_goal = MonthGoal.get_current_month_goal(user)
+        context["month_goal"] = month_goal
 
         # 今月のToDo（すべて取得 & ページネーション）
         return context
