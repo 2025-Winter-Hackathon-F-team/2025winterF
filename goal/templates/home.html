@@ -29,10 +29,9 @@
         <h3>{{ year_goal.year|date:"Y" }}年の目標</h3>
         <p>{{ year_goal.title }}</p>
         <div class="goal-buttons">
-          <form method="get" action="{% url 'goal:year_goal_detail' %}">
-            {% csrf_token %}
-              <button type="submit" class="goal-detail">詳細</button>
-          </form>
+          <a href="{% url 'goal:year_goal_detail' %}"
+            ><button class="goal-detail">詳細</button></a
+          >
           <button class="goal-complete">達成</button>
         </div>
       </div>
@@ -40,12 +39,11 @@
       <div class="goal-new-item">
         <h3>今年の目標がまだありません</h3>
         <p>新しい目標を作成しましょう！</p>
-        <form method="post" action="{% url 'goal:create_year_goal' %}">
-          {% csrf_token %}
-          <div class="goal-buttons">
-            <button type="submit" class="goal-create">新規</button>
-          </div>
-        </form>
+        <div class="goal-buttons">
+          <a href="{% url 'goal:create_year_goal' %}"
+            ><button class="goal-create">新規</button></a
+          >
+        </div>
       </div>
       {% endif %} {% if month_goal %}
       <div class="goal-item">
