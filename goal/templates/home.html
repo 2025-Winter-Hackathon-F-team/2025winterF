@@ -67,20 +67,37 @@
   <div class="todo-box">
     <h2>やるべきこと</h2>
     <div class="todo-list">
-      <div class="todo-item">
-        <h3>""</h3>
-        <p>やることの内容</p>
-        <div class="todo-buttons">
-          <button class="todo-complete">達成</button>
+      {% for todo in todos %}
+        <div class="todo-item">
+          <h3>{{ month_goal.month }}月のToDo_{{ todo.id }}</h3>
+            <p>{{ todo.title }}</p>
+            <div class="todo-buttons">
+              <button class="todo-complete">達成</button>
+            </div>
         </div>
-      </div>
-      <div class="todo-item">
-        <p>やることの内容</p>
-        <div class="todo-buttons">
-          <button class="todo-complete">達成</button>
-        </div>
-      </div>
+      {% empty %}
+        <p>今月のToDoはまだありません。</p>
     </div>
+      {% endfor %}
+  </div>
+
+  <!-- ページネーション -->
+  <div class="pagination">
+    <span class="step-links">
+        {% if todos.has_previous %}
+            <a href="?page=1">&laquo; 最初へ</a>
+            <a href="?page={{ todos.previous_page_number }}">前へ</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ todos.number }} of {{ todos.paginator.num_pages }}.
+        </span>
+
+        {% if todos.has_next %}
+            <a href="?page={{ todos.next_page_number }}">次へ</a>
+            <a href="?page={{ todos.paginator.num_pages }}">最後へ &raquo;</a>
+        {% endif %}
+    </span>
   </div>
 
   <div class="logout">
