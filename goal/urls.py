@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import HomeView, CreateYearGoalView, YearGoalDetailView, YearGoalUpdateView, FeedbackView
+from .views import HomeView, CreateYearGoalView, YearGoalDetailView, YearGoalUpdateView, MontGoalDetailView, FeedbackView
 
 
 # 名前空間を設定
@@ -14,6 +14,10 @@ urlpatterns = [
     path("year_goal/detail/<int:year>/", YearGoalDetailView.as_view(), name="year_goal_detail_year"),
     # 年目標のタイトルを更新
     path("year_goal/<int:year>/edit/", YearGoalUpdateView.as_view(), name="year_goal_edit"),
+    # 年指定なしでアクセス（月の目標）
+    path("year_goal/month_goal/<int:month>/", MontGoalDetailView.as_view(), name="month_goal_detail"),
+    # 年を指定した場合（月の目標）
+    path("year_goal/<int:year>/month_goal/<int:month>/", MontGoalDetailView.as_view(), name="month_goal_detail_specific_year"),
     path("", HomeView.as_view(), name="home"),
     path("feedback/", FeedbackView.as_view(), name="feedback"),
 ]

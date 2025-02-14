@@ -169,3 +169,32 @@ class MonthGoal(models.Model):
         return cls.objects.filter(
             year_goal=year_goal, month=current_month
         ).first()
+
+    @classmethod
+    def get_specific_month_goal(cls, year_goal, month):
+        """
+        指定された特定の年、月の目標を取得する
+        Args:
+            year_goal (YearGoal): 年目標
+            month (int): 目標を取得する月
+        Returns:
+            MonthGoal or None: 該当する月目標が存在すれば MonthGoal インスタンスを返し、存在しなければ None を返す
+        """
+        try:
+            return cls.objects.get(year_goal = year_goal, month=month)
+        except cls.DoesNotExist as e:
+            # 目標が設定されていない場合、ログに記録して None を返す
+            logger.warning(f"[MonthGoal] Not found: year_goal_id={year_goal.id}, month={month}. Error: {e}")
+            return None
+        except cls.MultipleObjectsReturned as e:
+            # データの整合性エラー（1つの年の1つの月に複数の目標が存在する）
+            logger.error(f"[MonthGoal] Data integrity issue: Multiple entries found for year_goal_id={year_goal.id}, month={month}. Error: {e}")
+            return None
+        except DatabaseError as e:
+            # データベース関連のエラー
+            logger.error(f"[MonthGoal] DatabaseError: year_goal_id={year_goal.id}, month={month}. Error: {e}")
+            return None
+        except Exception as e:
+            # 予期しないエラーのキャッチ
+            logger.exception(f"[MonthGoal] Unexpected error: year_goal_id={year_goal.id}, month={month}. Error: {e}")
+            return None
