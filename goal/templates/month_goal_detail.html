@@ -9,5 +9,15 @@
     <div>年: {{month_goal.year_goal.year.year}}</div>
     <div>月: {{month_goal.month}}</div>
     <div>月目標のタイトル: {{month_goal.title}}</div>
+    <h2>Todos</h2>
+        {% if todos %}
+            <ul>
+                {% for todo in todos %}
+                    <li>タイトル: {{ todo.title }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>未設定</p>
+        {% endif %}
 </body>
 </html>

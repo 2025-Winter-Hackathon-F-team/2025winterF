@@ -8,6 +8,7 @@ from django.views.generic import DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from goal.models.month_goal import MonthGoal
+from goal.models.todo import Todos
 from goal.models.year_goal import YearGoal
 
 logger = logging.getLogger(__name__)
@@ -68,6 +69,8 @@ class MontGoalDetailView(LoginRequiredMixin, DetailView):
         if not month_goal:
             return context
 
-        # TODO: month_goal.id をキーとしてTODOを取得し、コンテキストに追加
+        # month_goal に紐づくTodoを取得し、コンテキストに追加
+        todos = Todos.get_todos_for_month_goal(month_goal)
+        context["todos"] = todos
 
         return context
