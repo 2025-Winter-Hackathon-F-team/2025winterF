@@ -22,13 +22,16 @@
       <p id="error-message" style="color: red"></p>
       <!-- エラー表示用 -->
     </div>
+    {% else %}
+    <p>年目標が設定されていません。</p>
+    {% endif %}
   </div>
 
   <!-- 月目標リスト -->
   <div class="month-goal-box">
     <h2>月次目標</h2>
+    {% if month_goals %}
     <table>
-      <!-- {% if month_goals %} -->
       <thead>
         <tr>
           <th>月</th>
@@ -38,30 +41,23 @@
       </thead>
       <tbody>
         {% for month_goal in month_goals %}
-        <!-- {% if month_goal.title %} -->
         <tr>
-          <!-- <td>{{ month_goal.month }}: {{ month_goal.title }}</td> -->
           <td>{{ month_goal.month }}</td>
-          <!-- {% else %} -->
           <td>{{ month_goal.title|default:"未設定" }}</td>
-          <!-- {% endif %} {% endfor %} -->
           <td>{{ month_goal.status }}</td>
         </tr>
         {% empty %}
-          <tr>
-            <td colspan="3">未設定</td>
-          </tr>
+        <tr>
+          <td colspan="3">未設定</td>
+        </tr>
         {% endfor %}
       </tbody>
-      <!-- {% else %}
-      <p>未設定</p>
-      {% endif %} {% else %}
-      <p>未設定</p>
-      {% endif %} -->
     </table>
+    {% else %}
+    <p>月目標がありません。</p>
+    {% endif %}
   </div>
 </div>
-
 {% endblock content %} {% block script %}
 <script src="{% static 'js/year_goal_detail.js' %}"></script>
 {% endblock script %}
