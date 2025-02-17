@@ -43,6 +43,8 @@
         {% for month_goal in month_goals %}
         <tr>
           <td>
+            <!-- get_monthly_goals_for_year()により、monthが文字列"n月"でreturnされる。|slice:':-1' で月を削除 -->
+            <!-- |add:0 を使って文字列を整数に変換 -->
             <a
               href="{% url 'goal:month_goal_detail' month_goal.month|slice:':-1'|add:0 %}"
             >

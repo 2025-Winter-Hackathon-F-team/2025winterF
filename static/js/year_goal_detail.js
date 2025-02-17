@@ -12,21 +12,31 @@ function toggleEdit() {
   }
 }
 
+// CSRFトークンを取得する関数
+function getCsrfToken() {
+  let csrfTokenElement = document.querySelector("[name=csrfmiddlewaretoken]");
+  return csrfTokenElement ? csrfTokenElement.value : "";
+}
+
 // 年目標の保存処理
 function saveGoal(year) {
   let newTitle = document.getElementById("goal-input").value;
+  let csrfToken = getCsrfToken(); // CSRFトークンを取得
 
   fetch(`/goal/year_goal/${year}/edit/`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "X-CSRFToken": "{{ csrf_token }}",
+      "X-CSRFToken": csrfToken,
     },
     body: JSON.stringify({ title: newTitle, year: year }),
   })
-    .then((response) =>
-      response.json().then((data) => ({ status: response.status, body: data }))
-    )
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      return response.json();
+    })
     .then(({ status, body }) => {
       if (status === 200) {
         console.log("Success:", body.message);
@@ -35,7 +45,7 @@ function saveGoal(year) {
         toggleEdit();
       } else {
         // バリデーションエラーを投げる
-        throw body.error;
+        throw new Error(body.error || "保存に失敗しました");
       }
     })
     .catch((error) => {
@@ -44,9 +54,4 @@ function saveGoal(year) {
         ? error.title.join(", ")
         : "保存に失敗しました";
     });
-}
-
-// CSRFトークンを取得する関数 追加
-function getCsrfToken() {
-    return document.querySelector("[name=csrfmiddlewaretoken]").value;
 }

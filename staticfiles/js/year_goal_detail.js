@@ -12,15 +12,22 @@ function toggleEdit() {
   }
 }
 
+// CSRFトークンを取得する関数
+function getCsrfToken() {
+  let csrfTokenElement = document.querySelector("[name=csrfmiddlewaretoken]");
+  return csrfTokenElement ? csrfTokenElement.value : "";
+}
+
 // 年目標の保存処理
 function saveGoal(year) {
   let newTitle = document.getElementById("goal-input").value;
+  let csrfToken = getCsrfToken(); // CSRFトークンを取得
 
   fetch(`/goal/year_goal/${year}/edit/`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "X-CSRFToken": "{{ csrf_token }}",
+      "X-CSRFToken": csrfToken,
     },
     body: JSON.stringify({ title: newTitle, year: year }),
   })
@@ -44,9 +51,4 @@ function saveGoal(year) {
         ? error.title.join(", ")
         : "保存に失敗しました";
     });
-}
-
-// CSRFトークンを取得する関数 追加
-function getCsrfToken() {
-    return document.querySelector("[name=csrfmiddlewaretoken]").value;
 }

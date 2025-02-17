@@ -10,6 +10,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from goal.models import YearGoal
 from goal.models.month_goal import MonthGoal
 from django.core.paginator import Paginator
+from django.http import JsonResponse
 
 
 logger = logging.getLogger(__name__)
