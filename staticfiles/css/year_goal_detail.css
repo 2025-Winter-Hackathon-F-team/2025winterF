@@ -1,0 +1,90 @@
+@charset "utf-8";
+@import url("https://fonts.googleapis.com/css2?family=Kaisei+Opti:wght@400;700&display=swap");
+
+body {
+    background: linear-gradient(to bottom, #4A6FA5, #2E3B55);
+    font-family: "Kaisei Opti", serif;
+    color: #ffffff;
+    text-align: center;
+    background-attachment: fixed;
+}
+
+/* 全体レイアウト */
+.year-goal-container {
+    width: 80%;
+    margin: auto;
+    padding: 20px;
+}
+
+/* 年目標エリア */
+.year-goal-box {
+    background: #ffffff;
+    color: #454749;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.year-goal-box h2 {
+    margin-bottom: 10px;
+}
+
+#year-goal-display {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.edit-button {
+    background: transparent;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+/* 月目標リスト */
+.month-goal-box {
+    background: #ffffff;
+    color: #454749;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+th, td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: center;
+}
+
+th {
+    background: #2E3B55;
+    color: white;
+}
+
+/* ボタン */
+button {
+    border: 1px solid #ccc;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.save-button {
+    background: #4CAF50;
+    color: white;
+}
+
+.cancel-button {
+    background: #f44336;
+    color: white;
+}
+
+.error-text {
+    color: red;
+}

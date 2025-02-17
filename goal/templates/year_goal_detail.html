@@ -42,7 +42,13 @@
       <tbody>
         {% for month_goal in month_goals %}
         <tr>
-          <td>{{ month_goal.month }}</td>
+          <td>
+            <a
+              href="{% url 'goal:month_goal_detail' month_goal.month|slice:':-1'|add:0 %}"
+            >
+              {{ month_goal.month }}
+            </a>
+          </td>
           <td>{{ month_goal.title|default:"未設定" }}</td>
           <td>{{ month_goal.status }}</td>
         </tr>
@@ -56,6 +62,23 @@
     {% else %}
     <p>月目標がありません。</p>
     {% endif %}
+  </div>
+
+  <!-- ページネーション -->
+  <div class="pagination">
+    <span class="step-links">
+      {% if month_goals.has_previous %}
+      <a href="?page={{ month_goals.previous_page_number }}">前へ</a>
+      {% endif %}
+
+      <span class="current">
+        Page {{ month_goals.number }} of {{ month_goals.paginator.num_pages }}.
+      </span>
+
+      {% if month_goals.has_next %}
+      <a href="?page={{ month_goals.next_page_number }}">次へ</a>
+      {% endif %}
+    </span>
   </div>
 </div>
 {% endblock content %} {% block script %}
