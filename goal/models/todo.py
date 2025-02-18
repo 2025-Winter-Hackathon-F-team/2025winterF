@@ -1,6 +1,10 @@
-from django.db import models
+import logging
+
+from django.db import models, DatabaseError
 
 from .month_goal import MonthGoal
+
+logger = logging.getLogger(__name__)
 
 # todosテーブルの作成
 class Todos(models.Model):
@@ -48,3 +52,21 @@ class Todos(models.Model):
         if month_goal is None:
             return cls.objects.none()
         return cls.objects.filter(month_goal=month_goal).order_by("created_at")
+
+    @classmethod
+    def create_todo(cls, title, month_goal):
+        """
+        指定された月のToDoを作成
+        Args:
+            title: Todoのタイトル
+            month_goal: 月目標
+        """
+        try:
+            # 新しいTodoを作成
+            cls.objects.create(title=title, month_goal=month_goal)
+        except DatabaseError as e:
+            logger.error(f"Database error occurred while creating Todo for MonthGoal ID {month_goal.id} with title '{title}': {e}")
+            raise
+        except Exception as e:
+            logger.exception(f"An unexpected error occurred while creating Todo for MonthGoal ID {month_goal.id} with title '{title}': {e}")
+            raise
