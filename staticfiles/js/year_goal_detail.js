@@ -31,9 +31,12 @@ function saveGoal(year) {
     },
     body: JSON.stringify({ title: newTitle, year: year }),
   })
-    .then((response) =>
-      response.json().then((data) => ({ status: response.status, body: data }))
-    )
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      return response.json();
+    })
     .then(({ status, body }) => {
       if (status === 200) {
         console.log("Success:", body.message);
@@ -42,7 +45,7 @@ function saveGoal(year) {
         toggleEdit();
       } else {
         // バリデーションエラーを投げる
-        throw body.error;
+        throw new Error(body.error || "保存に失敗しました");
       }
     })
     .catch((error) => {

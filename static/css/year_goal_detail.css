@@ -1,6 +1,12 @@
 @charset "utf-8";
 @import url("https://fonts.googleapis.com/css2?family=Kaisei+Opti:wght@400;700&display=swap");
 
+html {
+    height: 100svh;
+    margin: 0;
+    padding: 0;
+}
+
 body {
     background: linear-gradient(to bottom, #4A6FA5, #2E3B55);
     font-family: "Kaisei Opti", serif;
@@ -14,7 +20,7 @@ body {
 .year-goal-container {
     width: 80%;
     margin: auto;
-    padding: 20px;
+    padding: 50px;
 }
 
 /* 年目標エリア */
@@ -38,8 +44,12 @@ body {
 
 .edit-button {
     background: transparent;
-    border: none;
+    border: 1px solid #507FA9;
+    color: #507FA9;
+    border-radius: 10px;
     font-size: 18px;
+    cursor: pointer;
+    padding: 5px 10px;
     cursor: pointer;
 }
 
@@ -88,4 +98,31 @@ button {
 
 .error-text {
     color: red;
+}
+
+.logout {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+}
+
+.logout-button {
+    padding: 5px 10px;
+    background-color: transparent;
+    border: 1px solid #E5D99B;
+    color: #E5D99B;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.home-button {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    padding: 5px 10px;
+    background-color: transparent;
+    border: 1px solid #E5D99B;
+    color: #E5D99B;
+    border-radius: 10px;
+    cursor: pointer;
 }

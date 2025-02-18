@@ -82,6 +82,22 @@
       {% endif %}
     </span>
   </div>
+
+  <!-- ホームボタン -->
+  <div class="home">
+    <form method="get" action="{% url 'goal:home' %}">
+      {% csrf_token %}
+      <button type="submit" class="home-button">Home</button>
+    </form>
+  </div>
+
+  <div class="logout">
+    <!-- ログアウトボタン -->
+    <form method="post" action="{% url 'account:logout' %}">
+      {% csrf_token %}
+      <button type="submit" class="logout-button">Logout</button>
+    </form>
+  </div>
 </div>
 {% endblock content %} {% block script %}
 <script>
