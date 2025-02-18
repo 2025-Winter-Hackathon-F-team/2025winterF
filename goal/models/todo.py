@@ -70,3 +70,22 @@ class Todos(models.Model):
         except Exception as e:
             logger.exception(f"An unexpected error occurred while creating Todo for MonthGoal ID {month_goal.id} with title '{title}': {e}")
             raise
+
+    @classmethod
+    def get_todos_for_month_goal(cls, month_goal):
+        """
+        指定された MonthGoal に対して、すべてのTodoを取得しリストとして返す
+        Args:
+            month_goal: 月目標
+        Returns:
+            QuerySet: Todo のクエリセット
+        """
+        try:
+            todos = cls.objects.filter(month_goal=month_goal).order_by("id")
+            return todos
+        except DatabaseError:
+            logger.error(f"Database error while fetching todos for MonthGoal ID {month_goal.id}.")
+        except Exception as e:
+            logger.exception(f"Unexpected error while fetching todos for MonthGoal ID {month_goal.id}: {e}")
+
+        return cls.objects.none()
