@@ -74,6 +74,33 @@ class MonthGoal(models.Model):
         year_goal_title = getattr(self.year_goal, 'title', 'Unknown Title')
         return f"{year_goal_title} - {self.title} ({self.month}月)"
 
+    def to_dict(self):
+        """
+        JSON 形式でデータを取得できるようにする
+        """
+        return {
+            "id": self.id,
+            "title": self.title,
+            "month": self.month,
+            "status": self.status,
+            "yearGoal": {
+                "id": self.year_goal.id,
+                "title": self.year_goal.title,
+                "year": self.year_goal.year.year,
+                "user": self.year_goal.user.id,
+            }
+        }
+
+    @classmethod
+    def get_month_goal(cls, month_goal_id):
+        try:
+            # id を使って MonthGoal を取得
+            month_goal = cls.objects.get(id=month_goal_id)
+        except cls.DoesNotExist:
+            # MonthGoal が存在しない場合は、適切にエラーハンドリング
+            return None
+        return month_goal
+
     @classmethod
     def create_month_goal(cls, month, year_goal_id):
         """
@@ -199,3 +226,11 @@ class MonthGoal(models.Model):
             # 予期しないエラーのキャッチ
             logger.exception(f"[MonthGoal] Unexpected error: year_goal_id={year_goal.id}, month={month}. Error: {e}")
             return None
+
+    def mark_as_completed(self):
+        """
+        月の目標を達成としてマークする
+        """
+        self.status = self.STATUS_ACHIEVED
+        self.save()
+        logger.info(f"Marked MonthGoal ID:{self.id} as completed")
