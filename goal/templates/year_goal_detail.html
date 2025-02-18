@@ -13,13 +13,22 @@
       <button class="edit-button" onclick="toggleEdit()">編集</button>
     </div>
     <!-- 編集モード（非表示） -->
-    <div id="year-goal-form" style="display: none">
-      <input type="text" id="goal-input" value="{{ year_goal.title }}" />
-      <button class="save-button" onclick="saveGoal({{ year_goal.year.year }})">
-        保存
-      </button>
-      <button class="cancel-button" onclick="toggleEdit()">キャンセル</button>
-      <p id="error-message" style="color: red"></p>
+    <div class="year-goal-item">
+      <div id="year-goal-form" style="display: none">
+        <input type="text" id="goal-input" value="{{ year_goal.title }}" />
+        <div class="goal-buttons">
+          <button
+            class="save-button"
+            onclick="saveGoal({{ year_goal.year.year }})"
+          >
+            保存
+          </button>
+          <button class="cancel-button" onclick="toggleEdit()">
+            キャンセル
+          </button>
+          <p id="error-message" style="color: red"></p>
+        </div>
+      </div>
       <!-- エラー表示用 -->
     </div>
     {% else %}
@@ -52,7 +61,15 @@
             </a>
           </td>
           <td>{{ month_goal.title|default:"未設定" }}</td>
-          <td>{{ month_goal.status }}</td>
+          <td>
+            {% if month_goal.status == 0 %}
+              未達成
+            {% elif month_goal.status == 1 %}
+              達成
+            {% else %}
+              未達成
+            {% endif %}
+          </td>
         </tr>
         {% empty %}
         <tr>
@@ -101,46 +118,52 @@
 </div>
 {% endblock content %} {% block script %}
 <script>
-    function toggleEdit() {
-        let displayDiv = document.getElementById("year-goal-display");
-        let formDiv = document.getElementById("year-goal-form");
+  function toggleEdit() {
+    let displayDiv = document.getElementById("year-goal-display");
+    let formDiv = document.getElementById("year-goal-form");
 
-        if (displayDiv.style.display === "none") {
-            displayDiv.style.display = "block";
-            formDiv.style.display = "none";
+    if (displayDiv.style.display === "none") {
+      displayDiv.style.display = "block";
+      formDiv.style.display = "none";
+    } else {
+      displayDiv.style.display = "none";
+      formDiv.style.display = "block";
+    }
+  }
+
+  function saveGoal(year) {
+    let newTitle = document.getElementById("goal-input").value;
+
+    fetch(`/goal/year_goal/${year}/edit/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": "{{ csrf_token }}",
+      },
+      body: JSON.stringify({ title: newTitle, year: year }),
+    })
+      .then((response) =>
+        response
+          .json()
+          .then((data) => ({ status: response.status, body: data }))
+      )
+      .then(({ status, body }) => {
+        if (status === 200) {
+          console.log("Success:", body.message);
+          document.getElementById("year-goal-text").textContent = newTitle;
+          document.getElementById("error-message").textContent = "";
+          toggleEdit();
         } else {
-            displayDiv.style.display = "none";
-            formDiv.style.display = "block";
+          // バリデーションエラーを投げる
+          throw body.error;
         }
-    }
-
-    function saveGoal(year) {
-        let newTitle = document.getElementById("goal-input").value;
-
-        fetch(`/goal/year_goal/${year}/edit/`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRFToken": "{{ csrf_token }}"
-            },
-            body: JSON.stringify({ title: newTitle, year: year })
-        })
-        .then(response => response.json().then(data => ({ status: response.status, body: data })))
-        .then(({ status, body }) => {
-            if (status === 200) {
-                console.log('Success:', body.message);
-                document.getElementById("year-goal-text").textContent = newTitle;
-                document.getElementById("error-message").textContent = "";
-                toggleEdit();
-            } else {
-                // バリデーションエラーを投げる
-                throw body.error;
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            document.getElementById("error-message").textContent = error.title ? error.title.join(", ") : "保存に失敗しました";
-        });
-    }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        document.getElementById("error-message").textContent = error.title
+          ? error.title.join(", ")
+          : "保存に失敗しました";
+      });
+  }
 </script>
 {% endblock script %}
