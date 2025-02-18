@@ -49,7 +49,7 @@ class MontGoalDetailView(LoginRequiredMixin, DetailView):
         GETリクエスト時に、目標が存在しない場合はリダイレクト
         """
         self.object = self.get_object()
-        if self.object is None or self.object.title is None:
+        if self.object is None:
             messages.warning(request, f"{self.kwargs.get('year', date.today().year)}年の{self.kwargs.get('month')}月の目標はまだ設定されていません。")
             return redirect(reverse("goal:home"))
 
