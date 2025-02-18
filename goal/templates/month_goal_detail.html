@@ -45,10 +45,10 @@
         {% else %}
             <p>未設定</p>
         {% endif %}
-    <div id="complete-button" style="display: block">
-        <button onclick="handleCompleteClick({{ month_goal.to_dict }})">達成済みにする</button>
+    <div id="achieve-button" style="display: block">
+        <button onclick="handleAchieveClick({{ month_goal.to_dict }})">達成済みにする</button>
     </div>
-    <div id="completion-message" style="display: none">
+    <div id="achieve-message" style="display: none">
         <p>達成</p>
     </div>
     <p id="error-message" style="color: red;"></p> <!-- エラー表示用 -->
@@ -62,7 +62,7 @@
     </div>
 </body>
 <script>
-    async function checkIfTodosCompleted(year, month) {
+    async function checkIfTodosAchieved(year, month) {
         try {
             const response = await fetch(`/goal/year_goal/${year}/month_goal/${month}/has_unachieved_todos/`, {
                 method: "GET",
@@ -85,33 +85,35 @@
         }
     }
 
-    async function handleCompleteClick(monthGoal) {
+    async function handleAchieveClick(monthGoal) {
         const { id, month, yearGoal } = monthGoal;
         console.log(yearGoal)
 
-        const result = await checkIfTodosCompleted(yearGoal.year, month);
+        const result = await checkIfTodosAchieved(yearGoal.year, month);
         if (!result) {
-            markGoalAsComplete(id, yearGoal, month);
+            markGoalAsAchieve(id, yearGoal, month);
         } else {
             // モーダルを表示
             document.getElementById("modal").style.display = "flex";
             document.getElementById("confirm-button").onclick = async function() {
-                await markGoalAsComplete(id, yearGoal, month);
-                hideModal();  // モーダルを閉じる
+                await markGoalAsAchieve(id, yearGoal, month);
+                // モーダルを閉じる
+                hideModal();
             };
             document.getElementById("cancel-button").onclick = function() {
-                hideModal();  // モーダルを閉じる
+                // モーダルを閉じる
+                hideModal();
             };
         }
     }
 
     function hideModal() {
-        document.getElementById("modal").style.display = "none";  // モーダルを非表示
+        document.getElementById("modal").style.display = "none";
     }
 
-    async function markGoalAsComplete(id, yearGoal, month) {
+    async function markGoalAsAchieve(id, yearGoal, month) {
         try {
-            const response = await fetch(`/goal/year_goal/${yearGoal.year}/month_goal/${month}/complete/`, {
+            const response = await fetch(`/goal/year_goal/${yearGoal.year}/month_goal/${month}/achieve/`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -121,13 +123,13 @@
             });
 
             if (!response.ok) {
-                throw new Error("Failed to complete goal");
+                throw new Error("Failed to Achieve goal");
             }
 
             const data = await response.json();
             console.log("Success:", data);
-            document.getElementById("complete-button").style.display = "none";
-            document.getElementById("completion-message").style.display = "block";
+            document.getElementById("achieve-button").style.display = "none";
+            document.getElementById("achieve-message").style.display = "block";
         } catch (error) {
             console.error('Error:', error);
             document.getElementById("error-message").textContent = error.message || "状態変更に失敗しました";

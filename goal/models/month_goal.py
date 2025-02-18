@@ -227,10 +227,16 @@ class MonthGoal(models.Model):
             logger.exception(f"[MonthGoal] Unexpected error: year_goal_id={year_goal.id}, month={month}. Error: {e}")
             return None
 
-    def mark_as_completed(self):
+    def mark_as_achieved(self):
         """
-        月の目標を達成としてマークする
+        月の目標を達成済みに変更する
+        Raises:
+            Exception: データベースの保存に失敗した場合
         """
-        self.status = self.STATUS_ACHIEVED
-        self.save()
-        logger.info(f"Marked MonthGoal ID:{self.id} as completed")
+        try:
+            self.status = self.STATUS_ACHIEVED
+            self.save()
+            logger.info(f"[MonthGoal] ID:{self.id} marked as achieved.")
+        except Exception as e:
+            logger.error(f"[MonthGoal] Failed to mark MonthGoal ID:{self.id} as achieved. Error: {e}")
+            raise Exception(f"[MonthGoal] Unexpected error while marking MonthGoal ID:{self.id} as achieved: {e}")

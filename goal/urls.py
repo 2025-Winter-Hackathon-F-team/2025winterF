@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import HomeView, CreateYearGoalView, YearGoalDetailView, YearGoalUpdateView, MontGoalDetailView, MonthGoalCompleteView, TodoCreateView, UnachievedTodoCheckView, FeedbackView
+from .views import HomeView, CreateYearGoalView, YearGoalDetailView, YearGoalUpdateView, MontGoalDetailView, MonthGoalAchieveView, TodoCreateView, UnachievedTodoCheckView, FeedbackView
 
 
 # 名前空間を設定
@@ -23,7 +23,7 @@ urlpatterns = [
     # Todo作成画面（年指定あり）
     path("year_goal/<int:year>/month_goal/<int:month>/todo/create/", TodoCreateView.as_view(), name="create_todo_specific_year"),
     # 月目標の状態を達成に変更する
-    path("year_goal/<int:year>/month_goal/<int:month>/complete/", MonthGoalCompleteView.as_view(), name="month_goal_complete"),
+    path("year_goal/<int:year>/month_goal/<int:month>/achieve/", MonthGoalAchieveView.as_view(), name="month_goal_achieve"),
     # 月目標に紐づく未達成のTodoがあるか確認
     path("year_goal/<int:year>/month_goal/<int:month>/has_unachieved_todos/", UnachievedTodoCheckView.as_view(), name="has_unachieved_todos"),
     path("", HomeView.as_view(), name="home"),

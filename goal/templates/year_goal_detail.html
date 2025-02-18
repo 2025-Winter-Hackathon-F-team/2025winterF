@@ -131,39 +131,33 @@
     }
   }
 
-  async function saveGoal(year) {
-    let newTitle = document.getElementById("goal-input").value;
+    async function saveGoal(year) {
+        let newTitle = document.getElementById("goal-input").value;
 
-    await fetch(`/goal/year_goal/${year}/edit/`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-CSRFToken": "{{ csrf_token }}",
-      },
-      body: JSON.stringify({ title: newTitle, year: year }),
-    })
-      .then((response) =>
-        response
-          .json()
-          .then((data) => ({ status: response.status, body: data }))
-      )
-      .then(({ status, body }) => {
-        if (status === 200) {
-          console.log("Success:", body);
-          document.getElementById("year-goal-text").textContent = newTitle;
-          document.getElementById("error-message").textContent = "";
-          toggleEdit();
-        } else {
-          // バリデーションエラーを投げる
-          throw body.error;
+        try {
+            const response = await fetch(`/goal/year_goal/${year}/edit/`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": "{{ csrf_token }}"
+                },
+                body: JSON.stringify({ title: newTitle, year: year })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error?.title?.join(", ") || "保存に失敗しました");
+            }
+
+            console.log("Success:", data);
+            document.getElementById("year-goal-text").textContent = newTitle;
+            document.getElementById("error-message").textContent = "";
+            toggleEdit();
+        } catch (error) {
+            console.error("Error:", error);
+            document.getElementById("error-message").textContent = error.message || "保存に失敗しました";
         }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-        document.getElementById("error-message").textContent = error.title
-          ? error.title.join(", ")
-          : "保存に失敗しました";
-      });
-  }
+    }
 </script>
 {% endblock script %}
