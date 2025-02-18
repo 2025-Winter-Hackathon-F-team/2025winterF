@@ -1,84 +1,169 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
+{% extends "base.html" %} {% load static %} {% block title %} 年目標詳細 
+{% endblock title %} {% block head %}
+<link rel="stylesheet" href="{% static 'css/year_goal_detail.css' %}" />
+{% endblock head %} {% block content %}
+<div class="year-goal-container">
+  <!-- 年目標エリア -->
+  <div class="year-goal-box">
     {% if year_goal %}
-        <p>{{ year_goal.year.year }}</p>
-        <!-- 表示モード -->
-        <div id="year-goal-display">
-            <span id="year-goal-text">{{ year_goal.title }}</span>
-            <button onclick="toggleEdit()">編集</button>
+    <p>{{ year_goal.year.year }}年</p>
+    <!-- 表示モード -->
+    <div id="year-goal-display">
+      <span id="year-goal-text">{{ year_goal.title }}</span>
+      <button class="edit-button" onclick="toggleEdit()">編集</button>
+    </div>
+    <!-- 編集モード（非表示） -->
+    <div class="year-goal-item">
+      <div id="year-goal-form" style="display: none">
+        <input type="text" id="goal-input" value="{{ year_goal.title }}" />
+        <div class="goal-buttons">
+          <button
+            class="save-button"
+            onclick="saveGoal({{ year_goal.year.year }})"
+          >
+            保存
+          </button>
+          <button class="cancel-button" onclick="toggleEdit()">
+            キャンセル
+          </button>
+          <p id="error-message" style="color: red"></p>
         </div>
-        <!-- 編集モード（非表示） -->
-        <div id="year-goal-form" style="display: none;">
-            <input type="text" id="goal-input" value="{{ year_goal.title }}">
-            <button onclick="saveGoal({{ year_goal.year.year }})">保存</button>
-            <button onclick="toggleEdit()">キャンセル</button>
-            <p id="error-message" style="color: red;"></p> <!-- エラー表示用 -->
-        </div>
-        <h2>月次目標</h2>
-        {% if month_goals %}
-            <ul>
-                {% for month_goal in month_goals %}
-                    {% if month_goal.title %}
-                        <li>{{ month_goal.month }}: {{ month_goal.title }}</li>
-                    {% else %}
-                        <li>{{ month_goal.month }}: 未設定</li>
-                    {% endif %}
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p>未設定</p>
-        {% endif %}
+      </div>
+      <!-- エラー表示用 -->
+    </div>
     {% else %}
-        <p>未設定</p>
+    <p>年目標が設定されていません。</p>
     {% endif %}
-</body>
+  </div>
+
+  <!-- 月目標リスト -->
+  <div class="month-goal-box">
+    <h2>月次目標</h2>
+    {% if month_goals %}
+    <table>
+      <thead>
+        <tr>
+          <th>月</th>
+          <th>タイトル</th>
+          <th>状態</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for month_goal in month_goals %}
+        <tr>
+          <td>
+            <!-- get_monthly_goals_for_year()により、monthが文字列"n月"でreturnされる。|slice:':-1' で月を削除 -->
+            <!-- |add:0 を使って文字列を整数に変換 -->
+            <a
+              href="{% url 'goal:month_goal_detail' month_goal.month|slice:':-1'|add:0 %}"
+            >
+              {{ month_goal.month }}
+            </a>
+          </td>
+          <td>{{ month_goal.title|default:"未設定" }}</td>
+          <td>
+            {% if month_goal.status == 0 %}
+              未達成
+            {% elif month_goal.status == 1 %}
+              達成
+            {% else %}
+              未達成
+            {% endif %}
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="3">未設定</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p>月目標がありません。</p>
+    {% endif %}
+  </div>
+
+  <!-- ページネーション -->
+  <div class="pagination">
+    <span class="step-links">
+      {% if month_goals.has_previous %}
+      <a href="?page={{ month_goals.previous_page_number }}">前へ</a>
+      {% endif %}
+
+      <span class="current">
+        Page {{ month_goals.number }} of {{ month_goals.paginator.num_pages }}.
+      </span>
+
+      {% if month_goals.has_next %}
+      <a href="?page={{ month_goals.next_page_number }}">次へ</a>
+      {% endif %}
+    </span>
+  </div>
+
+  <!-- ホームボタン -->
+  <div class="home">
+    <form method="get" action="{% url 'goal:home' %}">
+      {% csrf_token %}
+      <button type="submit" class="home-button">Home</button>
+    </form>
+  </div>
+
+  <div class="logout">
+    <!-- ログアウトボタン -->
+    <form method="post" action="{% url 'account:logout' %}">
+      {% csrf_token %}
+      <button type="submit" class="logout-button">Logout</button>
+    </form>
+  </div>
+</div>
+{% endblock content %} {% block script %}
 <script>
-    function toggleEdit() {
-        let displayDiv = document.getElementById("year-goal-display");
-        let formDiv = document.getElementById("year-goal-form");
+  function toggleEdit() {
+    let displayDiv = document.getElementById("year-goal-display");
+    let formDiv = document.getElementById("year-goal-form");
 
-        if (displayDiv.style.display === "none") {
-            displayDiv.style.display = "block";
-            formDiv.style.display = "none";
+    if (displayDiv.style.display === "none") {
+      displayDiv.style.display = "block";
+      formDiv.style.display = "none";
+    } else {
+      displayDiv.style.display = "none";
+      formDiv.style.display = "block";
+    }
+  }
+
+  async function saveGoal(year) {
+    let newTitle = document.getElementById("goal-input").value;
+
+    await fetch(`/goal/year_goal/${year}/edit/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": "{{ csrf_token }}",
+      },
+      body: JSON.stringify({ title: newTitle, year: year }),
+    })
+      .then((response) =>
+        response
+          .json()
+          .then((data) => ({ status: response.status, body: data }))
+      )
+      .then(({ status, body }) => {
+        if (status === 200) {
+          console.log("Success:", body);
+          document.getElementById("year-goal-text").textContent = newTitle;
+          document.getElementById("error-message").textContent = "";
+          toggleEdit();
         } else {
-            displayDiv.style.display = "none";
-            formDiv.style.display = "block";
+          // バリデーションエラーを投げる
+          throw body.error;
         }
-    }
-
-    function saveGoal(year) {
-        let newTitle = document.getElementById("goal-input").value;
-
-        fetch(`/goal/year_goal/${year}/edit/`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRFToken": "{{ csrf_token }}"
-            },
-            body: JSON.stringify({ title: newTitle, year: year })
-        })
-        .then(response => response.json().then(data => ({ status: response.status, body: data })))
-        .then(({ status, body }) => {
-            if (status === 200) {
-                console.log('Success:', body.message);
-                document.getElementById("year-goal-text").textContent = newTitle;
-                document.getElementById("error-message").textContent = "";
-                toggleEdit();
-            } else {
-                // バリデーションエラーを投げる
-                throw body.error;
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            document.getElementById("error-message").textContent = error.title ? error.title.join(", ") : "保存に失敗しました";
-        });
-    }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        document.getElementById("error-message").textContent = error.title
+          ? error.title.join(", ")
+          : "保存に失敗しました";
+      });
+  }
 </script>
-</html>
+{% endblock script %}

@@ -6,6 +6,7 @@ from django.utils import timezone
 
 from .year_goal import YearGoal
 
+
 logger = logging.getLogger(__name__)
 
 # month_goalsテーブルの作成

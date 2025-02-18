@@ -9,6 +9,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 from goal.models import YearGoal
 from goal.models.month_goal import MonthGoal
+from django.core.paginator import Paginator
+from django.http import JsonResponse
 
 
 logger = logging.getLogger(__name__)
@@ -62,5 +64,14 @@ class YearGoalDetailView(LoginRequiredMixin, DetailView):
 
         # year_goal.id をキーとして月次目標を取得し、コンテキストに追加
         context["month_goals"] = MonthGoal.get_monthly_goals_for_year(year_goal_id=year_goal.id)
+
+        # 今年の目標（すべて取得 & ページネーション）
+        month_goals = MonthGoal.get_monthly_goals_for_year(year_goal_id=year_goal.id)
+        paginator = Paginator(month_goals, 6)  # １ページあたりの件数
+        page_number = self.request.GET.get(
+            "page"
+        )  # URLのパラメータから現在のページ番号を取得
+        page_obj = paginator.get_page(page_number)  # 指定ページのオブジェクトを返す
+        context["month_goals"] = page_obj
 
         return context
