@@ -6,4 +6,5 @@ from .month_goal.month_goal_detail_views import MontGoalDetailView
 from .todo.todo_create_views import TodoCreateView
 from .month_goal.month_goal_achieve_views import MonthGoalAchieveView
 from .todo.unachieved_todo_check_views import UnachievedTodoCheckView
+from .todo.todo_detail_views import TodoDetailView
 from .feedback import FeedbackView
