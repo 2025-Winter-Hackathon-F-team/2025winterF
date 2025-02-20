@@ -89,3 +89,43 @@ class Todos(models.Model):
             logger.exception(f"Unexpected error while fetching todos for MonthGoal ID {month_goal.id}: {e}")
 
         return cls.objects.none()
+
+    @classmethod
+    def has_unachieved(cls, month_goal):
+        """
+        指定された月目標に紐づく未達成のToDoが存在するかを確認する
+        Args:
+            month_goal (MonthGoal): チェックする対象の月目標
+        Returns:
+            bool: 未達成のToDoが存在すればTrue、それ以外はFalse
+            None: エラーが発生した場合
+        Raise:
+            予期しないエラーのキャッチ場合
+        """
+        try:
+            return cls.objects.filter(status=cls.STATUS_UNACHIEVED, month_goal=month_goal).exists()
+        except cls.DoesNotExist:
+            # 特定のオブジェクトが存在しない場合の処理
+            logger.warning(f"[Todos] No month goal found: month_goal={month_goal.id}")
+            return None
+        except Exception as e:
+            # 予期しないエラーのキャッチ
+            logger.exception(f"[Todos] Unexpected error while checking unachieved todos for month_goal={month_goal.id}: {e}")
+            raise
+
+    @classmethod
+    def mark_as_achieved(cls, month_goal):
+        """
+        指定された月目標に紐づく未達成のToDoを達成済みに変更する
+        Args:
+            month_goal (MonthGoal): 対象の月目標
+        Returns:
+            int: 更新されたToDoの数
+            None: エラーが発生した場合
+        """
+        try:
+            updated_count = cls.objects.filter(status=cls.STATUS_UNACHIEVED, month_goal=month_goal).update(status=cls.STATUS_ACHIEVED)
+            return updated_count
+        except Exception as e:
+            logger.exception(f"[Todos] Unexpected error while marking todos as achieved for month_goal={month_goal.id}: {e}")
+            return None

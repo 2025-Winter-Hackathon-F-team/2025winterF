@@ -74,6 +74,42 @@ class MonthGoal(models.Model):
         year_goal_title = getattr(self.year_goal, 'title', 'Unknown Title')
         return f"{year_goal_title} - {self.title} ({self.month}月)"
 
+    def to_dict(self):
+        """
+        JSON 形式でデータを取得できるようにする
+        """
+        return {
+            "id": self.id,
+            "title": self.title,
+            "month": self.month,
+            "status": self.status,
+            "yearGoal": {
+                "id": self.year_goal.id,
+                "title": self.year_goal.title,
+                "year": self.year_goal.year.year,
+                "user": self.year_goal.user.id,
+            }
+        }
+
+    @classmethod
+    def get_month_goal(cls, month_goal_id):
+        """
+        指定された ID の MonthGoal を取得するクラスメソッド
+        Args:
+            month_goal_id (int): 取得したい月目標の ID
+        Returns:
+            MonthGoal または None:
+                - 成功時: 該当する MonthGoal インスタンスを返す
+                - 失敗時: MonthGoal が存在しない場合は None を返す
+        """
+        try:
+            # id を使って MonthGoal を取得
+            month_goal = cls.objects.get(id=month_goal_id)
+        except cls.DoesNotExist:
+            # MonthGoal が存在しない場合は、適切にエラーハンドリング
+            return None
+        return month_goal
+
     @classmethod
     def create_month_goal(cls, month, year_goal_id):
         """
@@ -199,3 +235,17 @@ class MonthGoal(models.Model):
             # 予期しないエラーのキャッチ
             logger.exception(f"[MonthGoal] Unexpected error: year_goal_id={year_goal.id}, month={month}. Error: {e}")
             return None
+
+    def mark_as_achieved(self):
+        """
+        月の目標を達成済みに変更する
+        Raises:
+            Exception: データベースの保存に失敗した場合
+        """
+        try:
+            self.status = self.STATUS_ACHIEVED
+            self.save()
+            logger.info(f"[MonthGoal] ID:{self.id} marked as achieved.")
+        except Exception as e:
+            logger.error(f"[MonthGoal] Failed to mark MonthGoal ID:{self.id} as achieved. Error: {e}")
+            raise Exception(f"[MonthGoal] Unexpected error while marking MonthGoal ID:{self.id} as achieved: {e}")
