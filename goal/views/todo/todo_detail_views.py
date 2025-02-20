@@ -18,15 +18,24 @@ class TodoDetailView(LoginRequiredMixin, DetailView):
     model = Todos
     context_object_name = "todo"
 
+    def get_kwargs(self):
+        """
+        URLパラメータから year、month、todo_id を取得する。
+        Returns:
+            tuple[int, int, int]: year、month、todo_id のタプル。
+        """
+        year = self.kwargs.get("year", date.today().year)
+        month = self.kwargs.get("month")
+        todo_id = self.kwargs.get("todo")
+        return year, month, todo_id
+
     def get_object(self):
         """
         URLのパスから年、月、Todo(id)を取得し、Todoを取得する
         Returns:
             Todos: 指定されたTodoが存在すれば Todos インスタンスを返す
         """
-        year = self.kwargs.get("year", date.today().year)
-        month = self.kwargs.get("month")
-        todo_id = self.kwargs.get("todo")
+        year, month, todo_id = self.get_kwargs()
 
         # 年をdatetime.dateに変換
         year_start_date = date(year, 1, 1)
@@ -58,9 +67,7 @@ class TodoDetailView(LoginRequiredMixin, DetailView):
         """
         self.object = self.get_object()
         if self.object is None:
-            year = self.kwargs.get("year", date.today().year)
-            month = self.kwargs.get("month")
-            todo_id = self.kwargs.get("todo")
+            year, month, todo_id = self.get_kwargs()
             messages.warning(request, f"{year}年の{month}月の指定したTodo（id={todo_id}）はまだ設定されていません。")
             return redirect(reverse("goal:month_goal_detail_specific_year", kwargs={"year": year, "month": month}))
 
