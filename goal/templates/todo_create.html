@@ -1,15 +1,41 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">送信</button>
+{% extends "base.html" %} {% load static %} {% block title %} todo作成
+{% endblock title %} {% block head %}
+<link rel="stylesheet" href="{% static 'css/year_goal_create.css' %}" />
+{% endblock head %} {% block content %}
+
+<div class="tile">
+  <div class="tile-header">
+    <h3 class="tile-appname"></h3>
+  </div>
+
+  <div class="tile-body">
+    <form id="form" method="post">
+      {% csrf_token %} {% for field in form %}
+      <label class="form-input">
+        {{ field }}
+        <span class="label">{{ field.label }}</span>
+        <span class="underline"></span>
+        {% if field.errors %}
+        <div class="error-message">
+          {% for error in field.errors %}
+          <p style="color: red">{{ error }}</p>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </label>
+      {% endfor %}
+
+      <div class="submit-container clearfix" style="margin-top: 2rem; text-align: center;">
+        <div class="button-wrapper">
+          <button type="submit" class="btn btn-irenic">
+            <span>登録</span>
+          </button>
+        </div>
+      </div>
     </form>
-</body>
-</html>
+  </div>
+</div>
+
+{% endblock content %} {% block script %}
+<script src="{% static 'js/year_goal_create.js' %}"></script>
+{% endblock script %}
