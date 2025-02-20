@@ -36,7 +36,15 @@ class UnachievedTodoCheckView(View):
 
     def get(self, request, *args, **kwargs):
         """
-        未達成のTodoがあるかをJSONで返す
+        指定された年月の月目標に関連する未達成のTodoがあるかをJSONで返す
+        Args:
+            request (HttpRequest): クライアントからのGETリクエスト
+        Returns:
+            JsonResponse:
+                - 未達成のTodoがある場合: {"has_unachieved_todos": true}
+                - 未達成のTodoがない場合: {"has_unachieved_todos": false}
+                - 指定された月目標のTodoが存在しない場合: エラーメッセージ (status=404)
+                - 予期せぬエラーが発生した場合: エラーメッセージ (status=500)
         """
         year = self.kwargs.get("year")
         month = self.kwargs.get("month")

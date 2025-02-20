@@ -29,6 +29,15 @@ class MonthGoalAchieveView(LoginRequiredMixin, UpdateView):
         return month_goal
 
     def post(self, request, *args, **kwargs):
+        """
+        月目標を達成状態に更新するAPIエンドポイント
+        Args:
+            request (HttpRequest): クライアントからのリクエスト
+        Returns:
+            JsonResponse:
+                - 成功時: 更新処理が完了したことを返す (status=200)
+                - 失敗時: エラーメッセージを返す (status=400, 404, 500)
+        """
         try:
             # リクエストボディをJSONとして読み込む
             data = json.loads(request.body)

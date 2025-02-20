@@ -93,6 +93,15 @@ class MonthGoal(models.Model):
 
     @classmethod
     def get_month_goal(cls, month_goal_id):
+        """
+        指定された ID の MonthGoal を取得するクラスメソッド
+        Args:
+            month_goal_id (int): 取得したい月目標の ID
+        Returns:
+            MonthGoal または None:
+                - 成功時: 該当する MonthGoal インスタンスを返す
+                - 失敗時: MonthGoal が存在しない場合は None を返す
+        """
         try:
             # id を使って MonthGoal を取得
             month_goal = cls.objects.get(id=month_goal_id)
