@@ -114,7 +114,7 @@ class Todos(models.Model):
             raise
 
     @classmethod
-    def mark_as_achieved(cls, month_goal):
+    def mark_as_achieved_for_goal(cls, month_goal):
         """
         指定された月目標に紐づく未達成のToDoを達成済みに変更する
         Args:
@@ -158,3 +158,17 @@ class Todos(models.Model):
             # 予期しないエラーのキャッチ
             logger.exception(f"[MonthGoal] Unexpected error: month_goal_id={month_goal.id}, todo_id={todo_id}. Error: {e}")
             return None
+
+    def mark_as_achieved(self):
+        """
+        Todoを達成済みに変更する
+        Raises:
+            Exception: データベースの保存に失敗した場合
+        """
+        try:
+            self.status = self.STATUS_ACHIEVED
+            self.save()
+            logger.info(f"[Todo] ID:{self.id} marked as achieved.")
+        except Exception as e:
+            logger.error(f"[Todo] Failed to mark Todo ID:{self.id} as achieved. Error: {e}")
+            raise
