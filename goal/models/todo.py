@@ -129,3 +129,32 @@ class Todos(models.Model):
         except Exception as e:
             logger.exception(f"[Todos] Unexpected error while marking todos as achieved for month_goal={month_goal.id}: {e}")
             return None
+
+    @classmethod
+    def get_specific_todo(cls, month_goal, todo_id):
+        """
+        指定されたTodoを取得する
+        Args:
+            month_goal (MonthGoal): 月目標
+            todo_id (int): Todoのid
+        Returns:
+            Todo or None: 該当するTodoが存在すれば Todos インスタンスを返し、存在しなければ None を返す
+        """
+        try:
+            return cls.objects.get(month_goal=month_goal, id=todo_id)
+        except cls.DoesNotExist as e:
+            # 目標が設定されていない場合、ログに記録して None を返す
+            logger.warning(f"[Todo] Not found: month_goal_id={month_goal.id}, todo_id={todo_id}. Error: {e}")
+            return None
+        except cls.MultipleObjectsReturned as e:
+            # データの整合性エラー（1つの年の1つの月に複数の目標が存在する）
+            logger.error(f"[MonthGoal] Data integrity issue: Multiple entries found for month_goal_id={month_goal.id}, todo_id={todo_id}. Error: {e}")
+            return None
+        except DatabaseError as e:
+            # データベース関連のエラー
+            logger.error(f"[MonthGoal] DatabaseError: month_goal_id={month_goal.id}, todo_id={todo_id}. Error: {e}")
+            return None
+        except Exception as e:
+            # 予期しないエラーのキャッチ
+            logger.exception(f"[MonthGoal] Unexpected error: month_goal_id={month_goal.id}, todo_id={todo_id}. Error: {e}")
+            return None
