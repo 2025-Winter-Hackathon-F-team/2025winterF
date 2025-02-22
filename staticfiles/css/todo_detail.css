@@ -18,9 +18,34 @@ body {
 
 /* 全体レイアウト */
 .todo-container {
-    width: 80%;
+    width: 100%;
     margin: auto;
     padding: 50px;
+    display: flex;
+    justify-content: center; /* 子要素を中央寄せ */
+    align-items: center;
+    min-height: 100svh;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: "Kaisei Opti", serif;
+    margin-bottom: .5rem;
+    color: #E5D99B;
+}
+
+.tile {
+    background-color: #ffffff;
+    border-radius: .1rem;
+    box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.2), 0 0.25rem 0.25rem rgba(0, 0, 0, 0.2);
+    width: 70%;
+    min-width: 320px;
+    overflow: hidden;
+}
+.tile .tile-header {
+    background-image: url("../images/sacredtree.png");
+    background-position: center;
+    background-size: cover;
+    height: 30rem;
 }
 
 .todo-box {
@@ -32,6 +57,10 @@ body {
     flex-direction: column;
     align-items: center;
     position: relative;
+    justify-content: center;
+    width: 80%; /* 余白のバランス調整 */
+    max-width: 100%;
+    margin: auto;
 }
 
 .todo-box h2 {
@@ -91,4 +120,31 @@ body {
     color: #3C6C76;
     border-radius: 10px;
     background: #ffffff90;
+}
+
+.logout {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+}
+
+.logout-button {
+    padding: 5px 10px;
+    background-color: transparent;
+    border: 1px solid #E5D99B;
+    color: #E5D99B;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.home-button {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    padding: 5px 10px;
+    background-color: transparent;
+    border: 1px solid #E5D99B;
+    color: #E5D99B;
+    border-radius: 10px;
+    cursor: pointer;
 }
