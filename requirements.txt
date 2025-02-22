@@ -1,6 +1,9 @@
-mysqlclient==2.2.7
 asgiref==3.8.1
 Django==5.1.5
 django-environ==0.12.0
-sqlparse==0.5.3
+django-extensions==3.2.3
+mysqlclient==2.2.7
 python-dateutil==2.9.0
+six==1.17.0
+sqlparse==0.5.3
+typing_extensions==4.12.2
