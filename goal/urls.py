@@ -82,17 +82,17 @@ urlpatterns = [
         TodoDetailView.as_view(),
         name="todo_detail_specific_year",
     ),
-    # ToToのタイトルを更新(年指定なし)
-    path(
-        "year_goal/month_goal/<int:month>/todo/<int:todo>/update/",
-        TodoUpdateView.as_view(),
-        name="todo_update",
-    ),
     # ToToのタイトルを更新(年指定あり)
     path(
         "year_goal/<int:year>/month_goal/<int:month>/todo/<int:todo>/update/",
         TodoUpdateView.as_view(),
         name="todo_update_specific_year",
+    ),
+    # ToToのタイトルを更新(年指定なし)
+    path(
+        "year_goal/month_goal/<int:month>/todo/<int:todo>/update/",
+        TodoUpdateView.as_view(),
+        name="todo_update",
     ),
     path("", HomeView.as_view(), name="home"),
     path("feedback/", FeedbackView.as_view(), name="feedback"),

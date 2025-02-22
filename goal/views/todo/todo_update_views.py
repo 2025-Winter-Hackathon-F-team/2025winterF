@@ -1,3 +1,4 @@
+import datetime
 import json
 import logging
 from django.http import JsonResponse
@@ -19,22 +20,32 @@ class TodoUpdateView(LoginRequiredMixin, View):
         print(
             f"✅ [DEBUG] TodoUpdateView にリクエストが到達: year={year}, month={month}, todo={todo}"
         )
+
         try:
-            # year を int に変換（fromisoformat のエラーを防ぐ）
-            year = int(year)
             # リクエストボディをJSONとして読み込む
             data = json.loads(request.body)
             new_title = data.get("title")
 
-            # year, month, todo_id を取得
-            year_goal = YearGoal.get_year_goal_for_user(request.user, year)
-            if not year_goal:
-                return JsonResponse({"error": "Year goal not found"}, status=404)
+            # 年目標を取得（year が None でなければ）
+            year_goal = None
+            if year is not None:
+                try:
+                    year = int(year)
+                    year_date = datetime.date(year, 1, 1)
+                    year_goal = YearGoal.get_year_goal_for_user(request.user, year_date)
+                    if not year_goal:
+                        return JsonResponse(
+                            {"error": "Year goal not found"}, status=404
+                        )
+                except ValueError:
+                    return JsonResponse({"error": "Invalid year format"}, status=400)
 
+            # 月目標を取得
             month_goal = MonthGoal.get_specific_month_goal(year_goal, month)
             if not month_goal:
                 return JsonResponse({"error": "Month goal not found"}, status=404)
 
+            # Todo を取得
             todo_item = Todos.get_specific_todo(month_goal, todo)
             if not todo_item:
                 return JsonResponse({"error": "Todo not found"}, status=404)
