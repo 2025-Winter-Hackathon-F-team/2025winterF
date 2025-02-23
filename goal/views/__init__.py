@@ -3,6 +3,7 @@ from .year_goal.create_year_goal_views import CreateYearGoalView
 from .year_goal.year_goal_detail_views import YearGoalDetailView
 from .year_goal.year_goal_update_views import YearGoalUpdateView
 from .month_goal.month_goal_detail_views import MontGoalDetailView
+from .month_goal.month_goal_update_views import MonthGoalUpdateView
 from .todo.todo_create_views import TodoCreateView
 from .month_goal.month_goal_achieve_views import MonthGoalAchieveView
 from .todo.unachieved_todo_check_views import UnachievedTodoCheckView
