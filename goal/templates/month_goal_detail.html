@@ -1,226 +1,226 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-  </head>
-  <style>
-    #modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      display: none;
-      justify-content: center;
-      align-items: center;
+{% extends "base.html" %} {% load static %} {% block title %} 月目標詳細 
+{% endblock title %} {% block head %}
+<link rel="stylesheet" href="{% static 'css/month_goal_detail.css' %}" />
+{% endblock head %} {% block content %}
+<div class="month-goal-container">
+  <div>年: {{month_goal.year_goal.year.year}}</div>
+  <div>月: {{month_goal.month}}</div>
+  <!-- エラーメッセージ表示 -->
+  <div id="error-message" style="color: red"></div>
+  <!--表示モード-->
+  <div id="month-goal-display">
+    <div>
+      月目標のタイトル:<span id="month-goal-text">{{ month_goal.title }}</span>
+    </div>
+    <button onclick="toggleEdit()">編集</button>
+  </div>
+
+  <!--編集モード-->
+  <div id="month-goal-form" style="display: none">
+    <input type="text" id="goal-input" value="{{ month_goal.title }}" />
+    <button
+      onclick="saveGoal('{{ month_goal.year_goal.year.year }}', '{{ month_goal.month}}')"
+    >
+      保存
+    </button>
+    <button onclick="toggleEdit()">キャンセル</button>
+  </div>
+  <h2>Todos</h2>
+  {% if todos %}
+  <ul>
+    {% for todo in todos %}
+    <li>タイトル: {{ todo.title }}</li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p>未設定</p>
+  {% endif %}
+
+  <div id="achieve-button" style="display: block">
+    <button onclick="handleAchieveClick({{ month_goal.to_dict }})">
+      達成済みにする
+    </button>
+  </div>
+  <div id="achieve-message" style="display: none">
+    <p>達成</p>
+  </div>
+  <p id="error-message" style="color: red"></p>
+  <!-- エラー表示用 -->
+  <!-- モーダルの構造 -->
+  <div id="modal">
+    <div id="modal-content">
+      <p>
+        この月目標には未達成のToDoがあります。強制的に達成にすると、下のToDoも一括で完了となります。よろしいですか？
+      </p>
+      <button id="confirm-button">はい、強制達成する</button>
+      <button id="cancel-button">いいえ、キャンセル</button>
+    </div>
+  </div>
+
+  <!-- ページネーション -->
+  <div class="pagination">
+    <span class="step-links">
+      {% if month_goals.has_previous %}
+      <a href="?page={{ month_goals.previous_page_number }}">前へ</a>
+      {% endif %}
+
+      <span class="current">
+        Page {{ month_goals.number }} of {{ month_goals.paginator.num_pages }}.
+      </span>
+
+      {% if month_goals.has_next %}
+      <a href="?page={{ month_goals.next_page_number }}">次へ</a>
+      {% endif %}
+    </span>
+  </div>
+
+  <!-- ホームボタン -->
+  <div class="home">
+    <form method="get" action="{% url 'goal:home' %}">
+      {% csrf_token %}
+      <button type="submit" class="home-button">Home</button>
+    </form>
+  </div>
+
+  <div class="logout">
+    <!-- ログアウトボタン -->
+    <form method="post" action="{% url 'account:logout' %}">
+      {% csrf_token %}
+      <button type="submit" class="logout-button">Logout</button>
+    </form>
+  </div>
+</div>
+{% endblock content %} {% block script %}
+
+<script>
+  async function checkIfTodosAchieved(year, month) {
+    try {
+      const response = await fetch(
+        `/goal/year_goal/${year}/month_goal/${month}/has_unachieved_todos/`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch data");
+      }
+      const data = await response.json();
+      if (data) {
+        return data.has_unachieved_todos;
+      }
+      return false;
+    } catch (error) {
+      console.error("Error:", error);
+      document.getElementById("error-message").textContent =
+        error.message || "状態変更に失敗しました";
     }
+  }
 
-    #modal-content {
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      text-align: center;
+  async function handleAchieveClick(monthGoal) {
+    const { id, month, yearGoal } = monthGoal;
+    console.log(yearGoal);
+
+    const result = await checkIfTodosAchieved(yearGoal.year, month);
+    if (!result) {
+      markGoalAsAchieve(id, yearGoal, month);
+    } else {
+      // モーダルを表示
+      document.getElementById("modal").style.display = "flex";
+      document.getElementById("confirm-button").onclick = async function () {
+        await markGoalAsAchieve(id, yearGoal, month);
+        // モーダルを閉じる
+        hideModal();
+      };
+      document.getElementById("cancel-button").onclick = function () {
+        // モーダルを閉じる
+        hideModal();
+      };
     }
+  }
 
-    button {
-      margin: 5px;
-      padding: 10px 20px;
-      cursor: pointer;
+  function hideModal() {
+    document.getElementById("modal").style.display = "none";
+  }
+
+  async function markGoalAsAchieve(id, yearGoal, month) {
+    try {
+      const response = await fetch(
+        `/goal/year_goal/${yearGoal.year}/month_goal/${month}/achieve/`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": "{{ csrf_token }}",
+          },
+          body: JSON.stringify({ month_id: id }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to Achieve goal");
+      }
+
+      const data = await response.json();
+      console.log("Success:", data);
+      document.getElementById("achieve-button").style.display = "none";
+      document.getElementById("achieve-message").style.display = "block";
+    } catch (error) {
+      console.error("Error:", error);
+      document.getElementById("error-message").textContent =
+        error.message || "状態変更に失敗しました";
     }
-  </style>
-  <body>
-    <div>年: {{month_goal.year_goal.year.year}}</div>
-    <div>月: {{month_goal.month}}</div>
-    <!-- エラーメッセージ表示 -->
-    <div id="error-message" style="color: red"></div>
-    <!--表示モード-->
-    <div id="month-goal-display">
-      <div>
-        月目標のタイトル:<span id="month-goal-text"
-          >{{ month_goal.title }}</span
-        >
-      </div>
-      <button onclick="toggleEdit()">編集</button>
-    </div>
+  }
 
-    <!--編集モード-->
-    <div id="month-goal-form" style="display: none">
-      <input type="text" id="goal-input" value="{{ month_goal.title }}" />
-      <button
-        onclick="saveGoal('{{ month_goal.year_goal.year.year }}', '{{ month_goal.month}}')"
-      >
-        保存
-      </button>
-      <button onclick="toggleEdit()">キャンセル</button>
-    </div>
-    <h2>Todos</h2>
-    {% if todos %}
-    <ul>
-      {% for todo in todos %}
-      <li>タイトル: {{ todo.title }}</li>
-      {% endfor %}
-    </ul>
-    {% else %}
-    <p>未設定</p>
-    {% endif %}
+  // タイトル更新
+  function toggleEdit() {
+    let displayDiv = document.getElementById("month-goal-display");
+    let formDiv = document.getElementById("month-goal-form");
+    if (displayDiv.style.display === "none") {
+      displayDiv.style.display = "block";
+      formDiv.style.display = "none";
+    } else {
+      displayDiv.style.display = "none";
+      formDiv.style.display = "block";
+    }
+  }
 
-    <div id="achieve-button" style="display: block">
-      <button onclick="handleAchieveClick({{ month_goal.to_dict }})">
-        達成済みにする
-      </button>
-    </div>
-    <div id="achieve-message" style="display: none">
-      <p>達成</p>
-    </div>
-    <p id="error-message" style="color: red"></p>
-    <!-- エラー表示用 -->
-    <!-- モーダルの構造 -->
-    <div id="modal">
-      <div id="modal-content">
-        <p>
-          この月目標には未達成のToDoがあります。強制的に達成にすると、下のToDoも一括で完了となります。よろしいですか？
-        </p>
-        <button id="confirm-button">はい、強制達成する</button>
-        <button id="cancel-button">いいえ、キャンセル</button>
-      </div>
-    </div>
-
-    <script>
-      async function checkIfTodosAchieved(year, month) {
-        try {
-          const response = await fetch(
-            `/goal/year_goal/${year}/month_goal/${month}/has_unachieved_todos/`,
-            {
-              method: "GET",
-              headers: {
-                "Content-Type": "application/json",
-              },
-            }
-          );
-
-          if (!response.ok) {
-            throw new Error("Failed to fetch data");
-          }
-          const data = await response.json();
-          if (data) {
-            return data.has_unachieved_todos;
-          }
-          return false;
-        } catch (error) {
-          console.error("Error:", error);
-          document.getElementById("error-message").textContent =
-            error.message || "状態変更に失敗しました";
+  async function saveGoal(year, month) {
+    let newTitle = document.getElementById("goal-input").value;
+    try {
+      const response = await fetch(
+        `/goal/year_goal/month_goal/${year}/${month}/edit/`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": "{{ csrf_token }}",
+          },
+          body: JSON.stringify({
+            title: newTitle,
+            year: year,
+            month: month,
+          }),
         }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error?.title?.join(", ") || "保存に失敗しました");
       }
 
-      async function handleAchieveClick(monthGoal) {
-        const { id, month, yearGoal } = monthGoal;
-        console.log(yearGoal);
-
-        const result = await checkIfTodosAchieved(yearGoal.year, month);
-        if (!result) {
-          markGoalAsAchieve(id, yearGoal, month);
-        } else {
-          // モーダルを表示
-          document.getElementById("modal").style.display = "flex";
-          document.getElementById("confirm-button").onclick =
-            async function () {
-              await markGoalAsAchieve(id, yearGoal, month);
-              // モーダルを閉じる
-              hideModal();
-            };
-          document.getElementById("cancel-button").onclick = function () {
-            // モーダルを閉じる
-            hideModal();
-          };
-        }
-      }
-
-      function hideModal() {
-        document.getElementById("modal").style.display = "none";
-      }
-
-      async function markGoalAsAchieve(id, yearGoal, month) {
-        try {
-          const response = await fetch(
-            `/goal/year_goal/${yearGoal.year}/month_goal/${month}/achieve/`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                "X-CSRFToken": "{{ csrf_token }}",
-              },
-              body: JSON.stringify({ month_id: id }),
-            }
-          );
-
-          if (!response.ok) {
-            throw new Error("Failed to Achieve goal");
-          }
-
-          const data = await response.json();
-          console.log("Success:", data);
-          document.getElementById("achieve-button").style.display = "none";
-          document.getElementById("achieve-message").style.display = "block";
-        } catch (error) {
-          console.error("Error:", error);
-          document.getElementById("error-message").textContent =
-            error.message || "状態変更に失敗しました";
-        }
-      }
-
-      // タイトル更新
-      function toggleEdit() {
-        let displayDiv = document.getElementById("month-goal-display");
-        let formDiv = document.getElementById("month-goal-form");
-        if (displayDiv.style.display === "none") {
-          displayDiv.style.display = "block";
-          formDiv.style.display = "none";
-        } else {
-          displayDiv.style.display = "none";
-          formDiv.style.display = "block";
-        }
-      }
-
-      async function saveGoal(year, month) {
-        let newTitle = document.getElementById("goal-input").value;
-        try {
-          const response = await fetch(
-            `/goal/year_goal/month_goal/${year}/${month}/edit/`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                "X-CSRFToken": "{{ csrf_token }}",
-              },
-              body: JSON.stringify({
-                title: newTitle,
-                year: year,
-                month: month,
-              }),
-            }
-          );
-
-          const data = await response.json();
-
-          if (!response.ok) {
-            throw new Error(
-              data.error?.title?.join(", ") || "保存に失敗しました"
-            );
-          }
-
-          document.getElementById("month-goal-text").textContent = newTitle;
-          document.getElementById("error-message").textContent = "";
-          toggleEdit();
-        } catch (error) {
-          console.error("Error:", error);
-          document.getElementById("error-message").textContent =
-            error.message || "保存に失敗しました";
-        }
-      }
-    </script>
-  </body>
-</html>
+      document.getElementById("month-goal-text").textContent = newTitle;
+      document.getElementById("error-message").textContent = "";
+      toggleEdit();
+    } catch (error) {
+      console.error("Error:", error);
+      document.getElementById("error-message").textContent =
+        error.message || "保存に失敗しました";
+    }
+  }
+</script>
+{% endblock script %}
