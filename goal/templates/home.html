@@ -50,7 +50,9 @@
         <h3>{{ month_goal.month }}月の目標</h3>
         <p>{{ month_goal.title }}</p>
         <div class="goal-buttons">
-          <button class="goal-detail">詳細</button>
+          <a href="{% url 'goal:month_goal_detail' month_goal.month %}"
+            ><button class="goal-detail">詳細</button></a
+          >
           <button class="goal-complete">達成</button>
         </div>
       </div>
