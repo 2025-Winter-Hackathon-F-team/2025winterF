@@ -3,38 +3,47 @@
 <link rel="stylesheet" href="{% static 'css/month_goal_detail.css' %}" />
 {% endblock head %} {% block content %}
 <div class="month-goal-container">
-  <div>年: {{month_goal.year_goal.year.year}}</div>
-  <div>月: {{month_goal.month}}</div>
-  <!-- エラーメッセージ表示 -->
-  <div id="error-message" style="color: red"></div>
-  <!--表示モード-->
-  <div id="month-goal-display">
-    <div>
-      月目標のタイトル:<span id="month-goal-text">{{ month_goal.title }}</span>
+  <!-- 月目標エリア -->
+  <div class="month-goal-box">
+    <div>年: {{month_goal.year_goal.year.year}}</div>
+    <div>月: {{month_goal.month}}</div>
+    <!-- エラーメッセージ表示 -->
+    <div id="error-message" style="color: red"></div>
+    <!--表示モード-->
+    <div id="month-goal-display">
+      <div>
+        月目標のタイトル:<span id="month-goal-text"
+          >{{ month_goal.title }}</span
+        >
+      </div>
+      <button onclick="toggleEdit()">編集</button>
     </div>
-    <button onclick="toggleEdit()">編集</button>
+
+    <!--編集モード-->
+    <div id="month-goal-form" style="display: none">
+      <input type="text" id="goal-input" value="{{ month_goal.title }}" />
+      <button
+        onclick="saveGoal('{{ month_goal.year_goal.year.year }}', '{{ month_goal.month}}')"
+      >
+        保存
+      </button>
+      <button onclick="toggleEdit()">キャンセル</button>
+    </div>
   </div>
 
-  <!--編集モード-->
-  <div id="month-goal-form" style="display: none">
-    <input type="text" id="goal-input" value="{{ month_goal.title }}" />
-    <button
-      onclick="saveGoal('{{ month_goal.year_goal.year.year }}', '{{ month_goal.month}}')"
-    >
-      保存
-    </button>
-    <button onclick="toggleEdit()">キャンセル</button>
+  <!-- ToDoリスト -->
+  <div class="todo-box">
+    <h2>Todos</h2>
+    {% if todos %}
+    <ul>
+      {% for todo in todos %}
+      <li>タイトル: {{ todo.title }}</li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p>未設定</p>
+    {% endif %}
   </div>
-  <h2>Todos</h2>
-  {% if todos %}
-  <ul>
-    {% for todo in todos %}
-    <li>タイトル: {{ todo.title }}</li>
-    {% endfor %}
-  </ul>
-  {% else %}
-  <p>未設定</p>
-  {% endif %}
 
   <div id="achieve-button" style="display: block">
     <button onclick="handleAchieveClick({{ month_goal.to_dict }})">
@@ -60,16 +69,18 @@
   <!-- ページネーション -->
   <div class="pagination">
     <span class="step-links">
-      {% if month_goals.has_previous %}
-      <a href="?page={{ month_goals.previous_page_number }}">前へ</a>
+      {% if todos.has_previous %}
+      <a href="?page=1">&laquo; 最初へ</a>
+      <a href="?page={{ todos.previous_page_number }}">前へ</a>
       {% endif %}
 
       <span class="current">
-        Page {{ month_goals.number }} of {{ month_goals.paginator.num_pages }}.
+        Page {{ todos.number }} of {{ todos.paginator.num_pages }}.
       </span>
 
-      {% if month_goals.has_next %}
-      <a href="?page={{ month_goals.next_page_number }}">次へ</a>
+      {% if todos.has_next %}
+      <a href="?page={{ todos.next_page_number }}">次へ</a>
+      <a href="?page={{ todos.paginator.num_pages }}">最後へ &raquo;</a>
       {% endif %}
     </span>
   </div>

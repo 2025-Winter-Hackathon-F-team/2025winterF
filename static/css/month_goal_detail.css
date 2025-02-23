@@ -23,7 +23,7 @@ body {
   padding: 50px;
 }
 
-/* 年目標エリア */
+/* 月目標エリア */
 .month-goal-box {
   background: #ffffff;
   color: #454749;
@@ -40,7 +40,7 @@ body {
   display: flex;
 }
 
-/* 年目標の表示モード */
+/* 月目標の表示モード */
 #month-goal-display {
   display: flex;
   justify-content: center;
@@ -94,8 +94,8 @@ body {
   background: #ffffff90;
 }
 
-/* 月目標リスト */
-.month-goal-box {
+/* ToDoリスト */
+.todo-box {
   background: #ffffff;
   color: #454749;
   padding: 20px;
