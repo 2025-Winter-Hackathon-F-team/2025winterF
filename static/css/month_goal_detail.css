@@ -132,6 +132,13 @@ button {
   color: red;
 }
 
+.todo-complete {
+  border: 1px solid #bb3a1e;
+  color: #bb3a1e;
+  border-radius: 10px;
+  margin: 10px;
+}
+
 .logout {
   position: fixed;
   top: 10px;
@@ -180,3 +187,9 @@ button {
   text-align: center;
 }
 
+.todo-cancel {
+  border: 1px solid #3c6c76;
+  color: #3c6c76;
+  border-radius: 10px;
+  background: #ffffff90; /* 下２桁は不透明度 */
+}
