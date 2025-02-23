@@ -13,6 +13,7 @@ from .views import (
     TodoUpdateView,
     UnachievedTodoCheckView,
     FeedbackView,
+    FeedbackGoodView,
 )
 
 
@@ -101,5 +102,8 @@ urlpatterns = [
         name="todo_update_specific_year",
     ),
     path("", HomeView.as_view(), name="home"),
+    # フィードバック画面（bad_message）
     path("feedback/", FeedbackView.as_view(), name="feedback"),
+    # フィードバック画面（good_message）
+    path("feedback_good/", FeedbackGoodView.as_view(), name="feedback_good"),
 ]

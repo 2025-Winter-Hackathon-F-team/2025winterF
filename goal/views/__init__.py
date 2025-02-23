@@ -4,9 +4,10 @@ from .year_goal.year_goal_detail_views import YearGoalDetailView
 from .year_goal.year_goal_update_views import YearGoalUpdateView
 from .month_goal.month_goal_detail_views import MontGoalDetailView
 from .month_goal.month_goal_update_views import MonthGoalUpdateView
-from .todo.todo_create_views import TodoCreateView
 from .month_goal.month_goal_achieve_views import MonthGoalAchieveView
+from .todo.todo_create_views import TodoCreateView
 from .todo.unachieved_todo_check_views import UnachievedTodoCheckView
 from .todo.todo_detail_views import TodoDetailView
-from .feedback import FeedbackView
 from .todo.todo_update_views import TodoUpdateView
+from .feedback import FeedbackView
+from .feedback_good import FeedbackGoodView
