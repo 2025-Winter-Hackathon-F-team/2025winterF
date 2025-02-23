@@ -13,6 +13,7 @@ from goal.models.year_goal import YearGoal
 
 logger = logging.getLogger(__name__)
 
+
 class MontGoalDetailView(LoginRequiredMixin, DetailView):
     template_name = "month_goal_detail.html"
     model = MonthGoal
@@ -37,7 +38,9 @@ class MontGoalDetailView(LoginRequiredMixin, DetailView):
         # 指定された年の目標を取得
         year_goal = YearGoal.get_year_goal_for_user(self.request.user, year_start_date)
         if not year_goal:
-            logger.warning(f"[YearGoal] Not found: user_id={self.request.user.id}, year={year}")
+            logger.warning(
+                f"[YearGoal] Not found: user_id={self.request.user.id}, year={year}"
+            )
             return None
 
         # 月目標を取得
@@ -51,7 +54,10 @@ class MontGoalDetailView(LoginRequiredMixin, DetailView):
         """
         self.object = self.get_object()
         if self.object is None:
-            messages.warning(request, f"{self.kwargs.get('year', date.today().year)}年の{self.kwargs.get('month')}月の目標はまだ設定されていません。")
+            messages.warning(
+                request,
+                f"{self.kwargs.get('year', date.today().year)}年の{self.kwargs.get('month')}月の目標はまだ設定されていません。",
+            )
             return redirect(reverse("goal:home"))
 
         return super().get(request, *args, **kwargs)

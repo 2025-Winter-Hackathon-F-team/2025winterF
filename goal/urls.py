@@ -7,7 +7,10 @@ from .views import (
     YearGoalUpdateView,
     MontGoalDetailView,
     MonthGoalAchieveView,
+    MonthGoalUpdateView,
     TodoCreateView,
+    TodoDetailView,
+    TodoUpdateView,
     UnachievedTodoCheckView,
     FeedbackView,
     FeedbackGoodView,
@@ -45,6 +48,11 @@ urlpatterns = [
         MontGoalDetailView.as_view(),
         name="month_goal_detail_specific_year",
     ),
+    path(
+        "year_goal/month_goal/<int:year>/<int:month>/edit/",
+        MonthGoalUpdateView.as_view(),
+        name="month_goal_edit",
+    ),
     # Todo作成画面（年指定なし）
     path(
         "year_goal/month_goal/<int:month>/todo/create/",
@@ -68,6 +76,30 @@ urlpatterns = [
         "year_goal/<int:year>/month_goal/<int:month>/has_unachieved_todos/",
         UnachievedTodoCheckView.as_view(),
         name="has_unachieved_todos",
+    ),
+    # Todo詳細画面（年指定なし）
+    path(
+        "year_goal/month_goal/<int:month>/todo/<int:todo>",
+        TodoDetailView.as_view(),
+        name="todo_detail",
+    ),
+    # Todo詳細画面（年指定あり）
+    path(
+        "year_goal/<int:year>/month_goal/<int:month>/todo/<int:todo>",
+        TodoDetailView.as_view(),
+        name="todo_detail_specific_year",
+    ),
+    # ToToのタイトルを更新(年指定なし)
+    path(
+        "year_goal/month_goal/<int:month>/todo/<int:todo>/update/",
+        TodoUpdateView.as_view(),
+        name="todo_update",
+    ),
+    # ToToのタイトルを更新(年指定あり)
+    path(
+        "year_goal/<int:year>/month_goal/<int:month>/todo/<int:todo>/update/",
+        TodoUpdateView.as_view(),
+        name="todo_update_specific_year",
     ),
     path("", HomeView.as_view(), name="home"),
     # フィードバック画面（bad_message）

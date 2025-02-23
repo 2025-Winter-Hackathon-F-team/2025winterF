@@ -1,11 +1,117 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    
-</body>
-</html>
+{% extends "base.html" %} {% load static %} {% block title %} ToDo詳細 
+{% endblock title %} {% block head %}
+<link rel="stylesheet" href="{% static 'css/todo_detail.css' %}" />
+{% endblock head %} {% block content %}
+<div class="todo-container">
+  <div class="tile">
+    <div class="tile-header">
+      <h3 class="tile-appname"></h3>
+    </div>
+    <!-- 年-月目標エリア -->
+    <div class="todo-box">
+      {% if todo %}
+      <p>{{todo.month_goal}}</p>
+      <!-- 表示モード -->
+      <div id="todo-display">
+        <span id="todo-text">{{todo.title}}</span>
+        <button class="edit-button" onclick="toggleEdit()">編集</button>
+      </div>
+      <!-- 編集モード（非表示） -->
+      <div class="todo-item">
+        <div id="todo-form" style="display: none">
+          <input type="text" id="goal-input" value="{{ todo.title }}" />
+          <div class="goal-buttons">
+            <button
+              class="save-button"
+              onclick="saveGoal({{ todo.month_goal.year_goal.year.year }}, {{ todo.month_goal.month }}, {{ todo.id }})"
+            >
+              保存
+            </button>
+            <button class="cancel-button" onclick="toggleEdit()">
+              キャンセル
+            </button>
+            <p id="error-message" style="color: red"></p>
+          </div>
+        </div>
+        <!-- エラー表示用 -->
+      </div>
+      {% else %}
+      <p>年目標が設定されていません。</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- ホームボタン -->
+  <div class="home">
+    <form method="get" action="{% url 'goal:home' %}">
+      {% csrf_token %}
+      <button type="submit" class="home-button">Home</button>
+    </form>
+  </div>
+
+  <div class="logout">
+    <!-- ログアウトボタン -->
+    <form method="post" action="{% url 'account:logout' %}">
+      {% csrf_token %}
+      <button type="submit" class="logout-button">Logout</button>
+    </form>
+  </div>
+</div>
+{% endblock content %} {% block script %}
+<script>
+  function toggleEdit() {
+    let displayDiv = document.getElementById("todo-display");
+    let formDiv = document.getElementById("todo-form");
+
+    if (displayDiv.style.display === "none") {
+      displayDiv.style.display = "block";
+      formDiv.style.display = "none";
+    } else {
+      displayDiv.style.display = "none";
+      formDiv.style.display = "block";
+    }
+  }
+
+  async function saveGoal(year, month, todoId) {
+    let newTitle = document.getElementById("goal-input").value;
+
+    try {
+      if (!year || isNaN(Number(year))) {
+        console.warn("Warning: year is undefined or NaN. Using empty string.");
+        year = "";
+      } else {
+        year = Number(year);
+      }
+
+      const url = year
+        ? `/goal/year_goal/${year}/month_goal/${month}/todo/${todoId}/update/`
+        : `/goal/year_goal/month_goal/${month}/todo/${todoId}/update/`;
+      console.log("Request URL:", url);
+
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": "{{ csrf_token }}",
+        },
+        body: JSON.stringify({ title: newTitle }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error?.title?.join(", ") || "保存に失敗しました");
+      }
+
+      console.log("Success:", data);
+      document.getElementById("todo-text").textContent = newTitle;
+      document.getElementById("error-message").textContent = "";
+      toggleEdit();
+    } catch (error) {
+      console.error("Error:", error);
+      document.getElementById("error-message").textContent =
+        error.message || "保存に失敗しました";
+    }
+  }
+</script>
+{% endblock script %}
