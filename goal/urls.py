@@ -7,11 +7,12 @@ from .views import (
     YearGoalUpdateView,
     MontGoalDetailView,
     MonthGoalAchieveView,
+    MonthGoalUpdateView,
     TodoCreateView,
     TodoDetailView,
+    TodoUpdateView,
     UnachievedTodoCheckView,
     FeedbackView,
-    TodoUpdateView,
 )
 
 
@@ -45,6 +46,11 @@ urlpatterns = [
         "year_goal/<int:year>/month_goal/<int:month>/",
         MontGoalDetailView.as_view(),
         name="month_goal_detail_specific_year",
+    ),
+    path(
+        "year_goal/month_goal/<int:year>/<int:month>/edit/",
+        MonthGoalUpdateView.as_view(),
+        name="month_goal_edit",
     ),
     # Todo作成画面（年指定なし）
     path(

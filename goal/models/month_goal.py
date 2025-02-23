@@ -3,11 +3,12 @@ import logging
 
 from django.db import models, DatabaseError
 from django.utils import timezone
-
+from django.core.exceptions import ValidationError
 from .year_goal import YearGoal
 
 
 logger = logging.getLogger(__name__)
+
 
 # month_goalsテーブルの作成
 class MonthGoal(models.Model):
@@ -16,10 +17,7 @@ class MonthGoal(models.Model):
     STATUS_ACHIEVED = 1
 
     # statusフィールドの選択肢 (DB保存値, 表示文字列)
-    STATUS_CHOICES = [
-        (STATUS_UNACHIEVED, "未達"),
-        (STATUS_ACHIEVED, "達成")
-    ]
+    STATUS_CHOICES = [(STATUS_UNACHIEVED, "未達"), (STATUS_ACHIEVED, "達成")]
 
     # 月を表す定数
     MONTH_JANUARY = 1
@@ -48,30 +46,41 @@ class MonthGoal(models.Model):
         (MONTH_SEPTEMBER, "9月"),
         (MONTH_OCTOBER, "10月"),
         (MONTH_NOVEMBER, "11月"),
-        (MONTH_DECEMBER, "12月")
+        (MONTH_DECEMBER, "12月"),
     ]
 
     # FK: year_goal_id INT NOT NULL
-    year_goal = models.ForeignKey(YearGoal, null=False, on_delete=models.CASCADE, verbose_name="年目標")
+    year_goal = models.ForeignKey(
+        YearGoal, null=False, on_delete=models.CASCADE, verbose_name="年目標"
+    )
     # month PositiveSmallIntegerField NOT NULL
-    month = models.PositiveSmallIntegerField(choices=MONTH_CHOICES, null=False, verbose_name="月")
+    month = models.PositiveSmallIntegerField(
+        choices=MONTH_CHOICES, null=False, verbose_name="月"
+    )
     # title VARCHAR(50) Default NULL
-    title = models.CharField(max_length=50, blank=True, null=True, verbose_name="月の目標を入力してください")
+    title = models.CharField(
+        max_length=50, blank=True, null=True, verbose_name="月の目標を入力してください"
+    )
     # status PositiveSmallIntegerField NOT NULL DEFAULT 0
-    status = models.PositiveSmallIntegerField(choices=STATUS_CHOICES, null=False, default=STATUS_UNACHIEVED, verbose_name="達成状況")
+    status = models.PositiveSmallIntegerField(
+        choices=STATUS_CHOICES,
+        null=False,
+        default=STATUS_UNACHIEVED,
+        verbose_name="達成状況",
+    )
     # created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="作成日時")
     # updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     updated_at = models.DateTimeField(auto_now=True, verbose_name="更新日時")
 
     class Meta:
-        db_table="month_goals"
-        unique_together = ('year_goal', 'month')
-        verbose_name="月目標"
+        db_table = "month_goals"
+        unique_together = ("year_goal", "month")
+        verbose_name = "月目標"
         verbose_name_plural = "月目標一覧"
 
     def __str__(self):
-        year_goal_title = getattr(self.year_goal, 'title', 'Unknown Title')
+        year_goal_title = getattr(self.year_goal, "title", "Unknown Title")
         return f"{year_goal_title} - {self.title} ({self.month}月)"
 
     def to_dict(self):
@@ -88,7 +97,7 @@ class MonthGoal(models.Model):
                 "title": self.year_goal.title,
                 "year": self.year_goal.year.year,
                 "user": self.year_goal.user.id,
-            }
+            },
         }
 
     @classmethod
@@ -124,18 +133,26 @@ class MonthGoal(models.Model):
             Exception: その他の予期しないエラー
         """
         try:
-            _, created = cls.objects.get_or_create(month=month, year_goal_id=year_goal_id)
+            _, created = cls.objects.get_or_create(
+                month=month, year_goal_id=year_goal_id
+            )
             if created:
                 logger.debug(f"Created goal for {month} in YearGoal ID: {year_goal_id}")
             else:
-                logger.debug(f"Goal for {month} already exists in YearGoal ID: {year_goal_id}")
+                logger.debug(
+                    f"Goal for {month} already exists in YearGoal ID: {year_goal_id}"
+                )
         except DatabaseError as e:
             # データベースエラーの内容を出力
-            logger.error(f"Database error occurred while creating goal for {month} in YearGoal ID: {year_goal_id}. Error: {str(e)}")
+            logger.error(
+                f"Database error occurred while creating goal for {month} in YearGoal ID: {year_goal_id}. Error: {str(e)}"
+            )
             raise
         except Exception as e:
             # その他のエラー内容を出力
-            logger.exception(f"Unexpected error occurred while creating goal for {month} in YearGoal ID: {year_goal_id}.")
+            logger.exception(
+                f"Unexpected error occurred while creating goal for {month} in YearGoal ID: {year_goal_id}."
+            )
             raise
 
     @classmethod
@@ -166,12 +183,16 @@ class MonthGoal(models.Model):
             list: 月目標のリスト（辞書形式）
         """
         try:
-            monthly_goals = cls.objects.filter(year_goal=year_goal_id).order_by('month')
+            monthly_goals = cls.objects.filter(year_goal=year_goal_id).order_by("month")
         except DatabaseError:
-            logger.error(f"Database error while fetching monthly goals for YearGoal ID {year_goal_id}.")
+            logger.error(
+                f"Database error while fetching monthly goals for YearGoal ID {year_goal_id}."
+            )
             return []
         except Exception as e:
-            logger.exception(f"Unexpected error while fetching monthly goals for YearGoal ID {year_goal_id}: {e}")
+            logger.exception(
+                f"Unexpected error while fetching monthly goals for YearGoal ID {year_goal_id}: {e}"
+            )
             return []
 
         # 月の選択肢（表示用の辞書）を取得
@@ -201,11 +222,9 @@ class MonthGoal(models.Model):
 
         year_goal = YearGoal.get_current_year_goal(user)
 
-        if year_goal is None :
+        if year_goal is None:
             return None
-        return cls.objects.filter(
-            year_goal=year_goal, month=current_month
-        ).first()
+        return cls.objects.filter(year_goal=year_goal, month=current_month).first()
 
     @classmethod
     def get_specific_month_goal(cls, year_goal, month):
@@ -218,22 +237,30 @@ class MonthGoal(models.Model):
             MonthGoal or None: 該当する月目標が存在すれば MonthGoal インスタンスを返し、存在しなければ None を返す
         """
         try:
-            return cls.objects.get(year_goal = year_goal, month=month)
+            return cls.objects.get(year_goal=year_goal, month=month)
         except cls.DoesNotExist as e:
             # 目標が設定されていない場合、ログに記録して None を返す
-            logger.warning(f"[MonthGoal] Not found: year_goal_id={year_goal.id}, month={month}. Error: {e}")
+            logger.warning(
+                f"[MonthGoal] Not found: year_goal_id={year_goal.id}, month={month}. Error: {e}"
+            )
             return None
         except cls.MultipleObjectsReturned as e:
             # データの整合性エラー（1つの年の1つの月に複数の目標が存在する）
-            logger.error(f"[MonthGoal] Data integrity issue: Multiple entries found for year_goal_id={year_goal.id}, month={month}. Error: {e}")
+            logger.error(
+                f"[MonthGoal] Data integrity issue: Multiple entries found for year_goal_id={year_goal.id}, month={month}. Error: {e}"
+            )
             return None
         except DatabaseError as e:
             # データベース関連のエラー
-            logger.error(f"[MonthGoal] DatabaseError: year_goal_id={year_goal.id}, month={month}. Error: {e}")
+            logger.error(
+                f"[MonthGoal] DatabaseError: year_goal_id={year_goal.id}, month={month}. Error: {e}"
+            )
             return None
         except Exception as e:
             # 予期しないエラーのキャッチ
-            logger.exception(f"[MonthGoal] Unexpected error: year_goal_id={year_goal.id}, month={month}. Error: {e}")
+            logger.exception(
+                f"[MonthGoal] Unexpected error: year_goal_id={year_goal.id}, month={month}. Error: {e}"
+            )
             return None
 
     def mark_as_achieved(self):
@@ -247,5 +274,36 @@ class MonthGoal(models.Model):
             self.save()
             logger.info(f"[MonthGoal] ID:{self.id} marked as achieved.")
         except Exception as e:
-            logger.error(f"[MonthGoal] Failed to mark MonthGoal ID:{self.id} as achieved. Error: {e}")
-            raise Exception(f"[MonthGoal] Unexpected error while marking MonthGoal ID:{self.id} as achieved: {e}")
+            logger.error(
+                f"[MonthGoal] Failed to mark MonthGoal ID:{self.id} as achieved. Error: {e}"
+            )
+            raise Exception(
+                f"[MonthGoal] Unexpected error while marking MonthGoal ID:{self.id} as achieved: {e}"
+            )
+
+    def update_title(self, new_title):
+        """
+        月目標のタイトルを更新する
+        """
+        try:
+            self.title = new_title
+            self.full_clean()  # バリデーションを実行
+            self.save()  # データベースに保存
+        except ValidationError as e:
+            # バリデーションエラーの内容を出力
+            logger.exception(
+                f"Validation error updating month_goal: {self.id} for year_goal {self.year_goal.id}: {e}"
+            )
+            raise
+        except DatabaseError as e:
+            # データベースエラーの内容を出力
+            logger.exception(
+                f"Database error updating month_goal: {self.id} for year_goal {self.year_goal.id}: {e}"
+            )
+            raise
+        except Exception as e:
+            # その他のエラー内容を出力
+            logger.exception(
+                f"Unexpected error updating month_goal: {self.id} for year_goal {self.year_goal.id}: {e}"
+            )
+            raise

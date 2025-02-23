@@ -34,7 +34,20 @@
 <body>
     <div>年: {{month_goal.year_goal.year.year}}</div>
     <div>月: {{month_goal.month}}</div>
-    <div>月目標のタイトル: {{month_goal.title}}</div>
+    <!-- エラーメッセージ表示 -->
+    <div id="error-message" style="color: red;"></div>
+    <!--表示モード-->
+    <div id="month-goal-display">
+        <div>月目標のタイトル:<span id="month-goal-text">{{ month_goal.title }}</span> </div>
+        <button onclick="toggleEdit()">編集</button>
+    </div>
+
+    <!--編集モード-->
+    <div id="month-goal-form" style="display: none;">
+        <input type="text" id="goal-input" value="{{ month_goal.title }}" />
+        <button onclick="saveGoal('{{ month_goal.year_goal.year.year }}', '{{ month_goal.month}}')">保存</button>
+        <button onclick="toggleEdit()">キャンセル</button>
+    </div>
     <h2>Todos</h2>
         {% if todos %}
             <ul>
@@ -45,6 +58,7 @@
         {% else %}
             <p>未設定</p>
         {% endif %}
+
     <div id="achieve-button" style="display: block">
         <button onclick="handleAchieveClick({{ month_goal.to_dict }})">達成済みにする</button>
     </div>
@@ -60,7 +74,8 @@
             <button id="cancel-button">いいえ、キャンセル</button>
         </div>
     </div>
-</body>
+
+
 <script>
     async function checkIfTodosAchieved(year, month) {
         try {
@@ -135,5 +150,46 @@
             document.getElementById("error-message").textContent = error.message || "状態変更に失敗しました";
         }
     }
+
+    // タイトル更新
+    function toggleEdit() {
+        let displayDiv = document.getElementById("month-goal-display");
+        let formDiv = document.getElementById("month-goal-form");
+        if (displayDiv.style.display === "none") {
+            displayDiv.style.display = "block";
+            formDiv.style.display = "none";
+        } else {
+            displayDiv.style.display = "none";
+            formDiv.style.display = "block";
+        }
+    }
+
+    async function saveGoal(year,month) {
+        let newTitle = document.getElementById("goal-input").value;
+        try {
+            const response = await fetch(`/goal/year_goal/month_goal/${year}/${month}/edit/`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": "{{ csrf_token }}",
+                },
+                body: JSON.stringify({ title: newTitle, year: year, month: month }),
+            })
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error?.title?.join(", ") || "保存に失敗しました");
+            }
+
+            document.getElementById("month-goal-text").textContent = newTitle;
+            document.getElementById("error-message").textContent = "";
+            toggleEdit();
+        } catch (error) {
+            console.error("Error:", error);
+            document.getElementById("error-message").textContent = error.message || "保存に失敗しました";
+        }
+    }
 </script>
+</body>
 </html>
