@@ -5,13 +5,17 @@
 <div class="month-goal-container">
   <!-- 月目標エリア -->
   <div class="month-goal-box">
-    <div>{{month_goal.year_goal.year.year}}年 {{month_goal.month}}月</div>
+    <div class="month-goal-header">
+      <div>{{month_goal.year_goal.year.year}}年 {{month_goal.month}}月</div>
+    </div>
     <!-- エラーメッセージ表示 -->
     <div id="error-message" style="color: red"></div>
     <!--表示モード-->
     <div id="month-goal-display">
-      <div>月目標:<span id="month-goal-text">{{ month_goal.title }}</span></div>
-      <button class="edit-button" onclick="toggleEdit()">編集</button>
+      <div class="month-goal-title">
+        <div>月目標:<span id="month-goal-text">{{ month_goal.title }}</span></div>
+        <button class="edit-button" onclick="toggleEdit()">編集</button>
+      </div>
     </div>
 
     <!--編集モード-->
@@ -28,7 +32,13 @@
 
   <!-- ToDoリスト -->
   <div class="todo-box">
-    <h2>Todos</h2>
+    <div class="todo-header">
+      <h2>Todos</h2>
+      <a href="{% url 'goal:create_todo' month_goal.month %}"
+        ><button class="todo-create">新規</button></a
+      >
+    </div>
+
     {% if todos %}
     <table>
       <thead>
@@ -41,7 +51,11 @@
       <tbody>
         {% for todo in todos %}
         <tr>
-          <td>{{ todo.id }}</td>
+          <td>
+            <a href="{% url 'goal:todo_detail' month_goal.month todo.id %}">
+              {{ todo.id }}
+            </a>
+          </td>
           <td>{{ todo.title }}</td>
           <td>
             {% if todo.status == 0 %}
@@ -62,7 +76,10 @@
   </div>
 
   <div id="achieve-button" style="display: block">
-    <button class="todo-complete" onclick="handleAchieveClick({{ month_goal.to_dict }})">
+    <button
+      class="todo-complete"
+      onclick="handleAchieveClick({{ month_goal.to_dict }})"
+    >
       達成済みにする
     </button>
   </div>
@@ -77,7 +94,9 @@
       <p>
         この月目標には未達成のToDoがあります。強制的に達成にすると、下のToDoも一括で完了となります。よろしいですか？
       </p>
-      <button class="todo-complete" id="confirm-button">はい、強制達成する</button>
+      <button class="todo-complete" id="confirm-button">
+        はい、強制達成する
+      </button>
       <button class="todo-cancel" id="cancel-button">いいえ、キャンセル</button>
     </div>
   </div>

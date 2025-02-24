@@ -40,6 +40,13 @@ body {
   display: flex;
 }
 
+.month-goal-title {
+  display: flex;
+  justify-content: space-between; /* タイトルと編集ボタンを横並び */
+  align-items: center;
+  padding: 10px;
+}
+
 /* 月目標の表示モード */
 #month-goal-display {
   display: flex;
@@ -100,6 +107,15 @@ body {
   color: #454749;
   padding: 20px;
   border-radius: 10px;
+  position: relative;
+}
+
+/* ToDoリストヘッダー */
+.todo-header {
+  display: flex;
+  justify-content: space-between; /* 見出しと新規ボタンを横並び */
+  align-items: center;
+  padding: 10px;
 }
 
 table {
@@ -137,6 +153,7 @@ button {
   color: #bb3a1e;
   border-radius: 10px;
   margin: 10px;
+  padding: 5px 10px;
 }
 
 .logout {
@@ -192,4 +209,14 @@ button {
   color: #3c6c76;
   border-radius: 10px;
   background: #ffffff90; /* 下２桁は不透明度 */
+}
+
+.todo-create {
+  border: 1px solid #3c6c76;
+  color: #3c6c76;
+  border-radius: 10px;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 5px 10px;
+  background: transparent;
 }
