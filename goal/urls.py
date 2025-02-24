@@ -11,6 +11,7 @@ from .views import (
     TodoCreateView,
     TodoDetailView,
     TodoUpdateView,
+    TodoAchieveView,
     UnachievedTodoCheckView,
     FeedbackView,
     FeedbackGoodView,
@@ -100,6 +101,12 @@ urlpatterns = [
         "year_goal/<int:year>/month_goal/<int:month>/todo/<int:todo>/update/",
         TodoUpdateView.as_view(),
         name="todo_update_specific_year",
+    ),
+    # Todoの状態を達成に変更する
+    path(
+        "year_goal/<int:year>/month_goal/<int:month>/todo/<int:todo>/achieve/",
+        TodoAchieveView.as_view(),
+        name="todo_achieve",
     ),
     path("", HomeView.as_view(), name="home"),
     # フィードバック画面（bad_message）
