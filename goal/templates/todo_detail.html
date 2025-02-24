@@ -14,7 +14,18 @@
       <!-- 表示モード -->
       <div id="todo-display">
         <span id="todo-text">{{todo.title}}</span>
-        <button class="edit-button" onclick="toggleEdit()">編集</button>
+          <div>
+            <button class="edit-button" onclick="toggleEdit()">編集</button>
+            <div id="achieve-button" style="display: {% if todo.status == 0 %}block{% else %}none{% endif %};">
+              <button class="achieve-button" onclick="markTodoAsAchieve({{ todo.month_goal.year_goal.year.year }}, {{ todo.month_goal.month }}, {{ todo.id }})">
+                達成済みにする
+              </button>
+            </div>
+            <div id="achieve-message" style="display: {% if todo.status == 1 %}block{% else %}none{% endif %};">
+              <p>達成</p>
+            </div>
+          </div>
+          <p id="error-message" style="color: red"></p>
       </div>
       <!-- 編集モード（非表示） -->
       <div class="todo-item">
@@ -111,6 +122,36 @@
       console.error("Error:", error);
       document.getElementById("error-message").textContent =
         error.message || "保存に失敗しました";
+    }
+  }
+
+  async function markTodoAsAchieve(year, month, todoId) {
+    try {
+      const response = await fetch(
+        `/goal/year_goal/${year}/month_goal/${month}/todo/${todoId}/achieve/`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": "{{ csrf_token }}",
+          },
+          body: JSON.stringify({ todo_id: todoId})
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to Achieve todo");
+      }
+
+      const data = await response.json()
+      console.log("Success", data)
+      document.getElementById("achieve-button").style.display = "none";
+      document.getElementById("achieve-message").style.display = "block";
+    } catch (error) {
+      console.error("Error:", error);
+      console.log(error.message)
+      document.getElementById("error-message").textContent =
+        error.message || "状態変更に失敗しました";
     }
   }
 </script>
