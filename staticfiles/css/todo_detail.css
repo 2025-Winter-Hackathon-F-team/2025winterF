@@ -90,6 +90,17 @@ h1, h2, h3, h4, h5, h6 {
     padding: 5px 10px;
 }
 
+.achieve-button {
+    background: transparent;
+    border: 1px solid #a95050;
+    color: #a95050;
+    border-radius: 10px;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 5px 10px;
+    margin-left: 5px;
+}
+
 .todo-item {
     flex-shrink: 1;
 }
