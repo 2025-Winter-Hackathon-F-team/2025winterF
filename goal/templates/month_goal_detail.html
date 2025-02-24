@@ -13,7 +13,9 @@
     <!--表示モード-->
     <div id="month-goal-display">
       <div class="month-goal-title">
-        <div>月目標:<span id="month-goal-text">{{ month_goal.title }}</span></div>
+        <div>
+          月目標:<span id="month-goal-text">{{ month_goal.title }}</span>
+        </div>
         <button class="edit-button" onclick="toggleEdit()">編集</button>
       </div>
     </div>
@@ -75,7 +77,10 @@
     {% endif %}
   </div>
 
-  <div id="achieve-button" style="display: block">
+  <div
+    id="achieve-button"
+    style="display: {% if month_goal.status == 0 %}block{% else %}none{% endif %};"
+  >
     <button
       class="todo-complete"
       onclick="handleAchieveClick({{ month_goal.to_dict }})"
@@ -83,7 +88,10 @@
       達成済みにする
     </button>
   </div>
-  <div id="achieve-message" style="display: none">
+  <div
+    id="achieve-message"
+    style="display: {% if month_goal.status == 0 %}none{% else %}block{% endif %};"
+  >
     <p>達成</p>
   </div>
   <p id="error-message" style="color: red"></p>
@@ -180,6 +188,7 @@
         await markGoalAsAchieve(id, yearGoal, month);
         // モーダルを閉じる
         hideModal();
+        location.reload();
       };
       document.getElementById("cancel-button").onclick = function () {
         // モーダルを閉じる
