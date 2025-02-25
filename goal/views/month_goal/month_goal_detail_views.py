@@ -10,6 +10,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from goal.models.month_goal import MonthGoal
 from goal.models.todo import Todos
 from goal.models.year_goal import YearGoal
+from django.core.paginator import Paginator
 
 logger = logging.getLogger(__name__)
 
@@ -77,6 +78,11 @@ class MontGoalDetailView(LoginRequiredMixin, DetailView):
 
         # month_goal に紐づくTodoを取得し、コンテキストに追加
         todos = Todos.get_todos_for_month_goal(month_goal)
-        context["todos"] = todos
+        paginator = Paginator(todos, 6)  # １ページあたりの件数
+        page_number = self.request.GET.get(
+            "page"
+        )  # URLのパラメータから現在のページ番号を取得
+        page_obj = paginator.get_page(page_number)  # 指定ページのオブジェクトを返す
+        context["todos"] = page_obj
 
         return context

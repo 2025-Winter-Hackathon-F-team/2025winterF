@@ -1,0 +1,222 @@
+@charset "utf-8";
+@import url("https://fonts.googleapis.com/css2?family=Kaisei+Opti:wght@400;700&display=swap");
+
+html {
+  height: 100svh;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: linear-gradient(to bottom, #4a6fa5, #2e3b55);
+  font-family: "Kaisei Opti", serif;
+  color: #ffffff;
+  text-align: center;
+  background-attachment: fixed;
+  overflow: hidden;
+}
+
+/* 全体レイアウト */
+.month-goal-container {
+  width: 80%;
+  margin: auto;
+  padding: 50px;
+}
+
+/* 月目標エリア */
+.month-goal-box {
+  background: #ffffff;
+  color: #454749;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.month-goal-box h2 {
+  margin-bottom: 10px;
+  display: flex;
+}
+
+.month-goal-title {
+  display: flex;
+  justify-content: space-between; /* タイトルと編集ボタンを横並び */
+  align-items: center;
+  padding: 10px;
+}
+
+/* 月目標の表示モード */
+#month-goal-display {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  position: relative;
+}
+
+.edit-button {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  background: transparent;
+  border: 1px solid #507fa9;
+  color: #507fa9;
+  border-radius: 10px;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 5px 10px;
+}
+
+.month-goal-item {
+  flex-shrink: 1;
+}
+
+/* 保存・キャンセルボタンの配置 */
+.goal-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+
+.save-button {
+  background-color: transparent;
+  padding: 8px 12px;
+  cursor: pointer;
+  border: 1px solid #bb3a1e;
+  color: #bb3a1e;
+  border-radius: 10px;
+}
+
+.cancel-button {
+  background-color: transparent;
+  padding: 8px 12px;
+  cursor: pointer;
+  border: 1px solid #3c6c76;
+  color: #3c6c76;
+  border-radius: 10px;
+  background: #ffffff90;
+}
+
+/* ToDoリスト */
+.todo-box {
+  background: #ffffff;
+  color: #454749;
+  padding: 20px;
+  border-radius: 10px;
+  position: relative;
+}
+
+/* ToDoリストヘッダー */
+.todo-header {
+  display: flex;
+  justify-content: space-between; /* 見出しと新規ボタンを横並び */
+  align-items: center;
+  padding: 10px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+th,
+td {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: center;
+}
+
+th {
+  background: #2e3b55;
+  color: white;
+}
+
+/* ボタン */
+button {
+  border: 1px solid #ccc;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.error-text {
+  color: red;
+}
+
+.todo-complete {
+  border: 1px solid #bb3a1e;
+  color: #bb3a1e;
+  border-radius: 10px;
+  margin: 10px;
+  padding: 5px 10px;
+}
+
+.logout {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+}
+
+.logout-button {
+  padding: 5px 10px;
+  background-color: transparent;
+  border: 1px solid #e5d99b;
+  color: #e5d99b;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.home-button {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 5px 10px;
+  background-color: transparent;
+  border: 1px solid #e5d99b;
+  color: #e5d99b;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+/* モーダル */
+#modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: none;
+  justify-content: center;
+  align-items: center;
+}
+
+#modal-content {
+  background: white;
+  color: #454749;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.todo-cancel {
+  border: 1px solid #3c6c76;
+  color: #3c6c76;
+  border-radius: 10px;
+  background: #ffffff90; /* 下２桁は不透明度 */
+}
+
+.todo-create {
+  border: 1px solid #3c6c76;
+  color: #3c6c76;
+  border-radius: 10px;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 5px 10px;
+  background: transparent;
+}
