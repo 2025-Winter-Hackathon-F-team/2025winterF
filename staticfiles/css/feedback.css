@@ -36,15 +36,3 @@ body {
     border-radius: 5px;
     text-align: center;
 }
-
-.home-button {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    padding: 5px 10px;
-    background-color: transparent;
-    border: 1px solid #E5D99B;
-    color: #E5D99B;
-    border-radius: 10px;
-    cursor: pointer;
-}
