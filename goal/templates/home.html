@@ -262,6 +262,7 @@ async function handleAchieveClick(monthGoal) {
       await markGoalAsAchieve(id, yearGoal, month);
       // モーダルを閉じる
       hideModal();
+      location.reload();
     };
     document.getElementById("cancel-button").onclick = function () {
       // モーダルを閉じる
