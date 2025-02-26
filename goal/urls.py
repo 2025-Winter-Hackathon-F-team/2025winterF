@@ -5,6 +5,7 @@ from .views import (
     CreateYearGoalView,
     YearGoalDetailView,
     YearGoalUpdateView,
+    YearGoalAchievementView,
     MontGoalDetailView,
     MonthGoalAchieveView,
     MonthGoalUpdateView,
@@ -35,6 +36,21 @@ urlpatterns = [
         "year_goal/<int:year>/edit/",
         YearGoalUpdateView.as_view(),
         name="year_goal_edit",
+    ),
+    path(
+        "year_goal/<int:year>/achieve/",
+        YearGoalAchievementView.as_view(),
+        name="year_goal_achieve",
+    ),
+    path(
+        "user/<int:user_id>/has_unachieved_goals/",
+        YearGoalAchievementView.as_view(),
+        name="year_goal_achievement",
+    ),
+    path(
+        "year_goal/<int:year_goal_id>/achieve_only_year/",
+        YearGoalAchievementView.as_view(),
+        name="year_goal_achieve_only_year",
     ),
     # 年指定なしでアクセス（月の目標）
     path(
