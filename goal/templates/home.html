@@ -1,6 +1,48 @@
 {% extends "base.html" %} {% load static %} {% block title %} ホーム 
 {% endblock title %} {% block head %}
 <link rel="stylesheet" href="{% static 'css/home.css' %}" />
+<style>
+  /* モーダルのスタイル */
+  #modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+  }
+
+  #modal-content {
+    background: white;
+    color: #454749;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+  }
+
+  .month-goal-modal-cancel {
+    border: 1px solid #3c6c76;
+    color: #3c6c76;
+    border-radius: 10px;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 5px 10px;
+    background: transparent;
+  }
+
+  .month-goal-modal-complete {
+    border: 1px solid #bb3a1e;
+    color: #bb3a1e;
+    border-radius: 10px;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 5px 10px;
+    background: transparent;
+  }
+</style>
 {% endblock head %} {% block content %}
 
 <div class="home-container">
@@ -53,7 +95,23 @@
           <a href="{% url 'goal:month_goal_detail' month_goal.month %}"
             ><button class="goal-detail">詳細</button></a
           >
-          <button class="goal-complete">達成</button>
+          <div
+            id="achieve-month-goal-button"
+            style="display: {% if month_goal.status == 0 %}block{% else %}none{% endif %};"
+          >
+            <button
+              class="goal-complete"
+              onClick="handleAchieveClick({{ month_goal.to_dict }})"
+            >
+              達成
+            </button>
+          </div>
+          <div
+            id="achieve-month-goal-message"
+            style="display: {% if month_goal.status == 0 %}none{% else %}block{% endif %};"
+          >
+            <p>達成</p>
+          </div>
         </div>
       </div>
       {% else %}
@@ -112,12 +170,105 @@
   </div>
 </div>
 
+<!-- モーダルの構造 -->
+<div id="modal">
+  <div id="modal-content">
+    <p>
+      この月目標には未達成のToDoがあります。強制的に達成にすると、下のToDoも一括で完了となります。よろしいですか？
+    </p>
+    <button class="month-goal-modal-complete" id="confirm-button">
+      はい、強制達成する
+    </button>
+    <button class="month-goal-modal-cancel" id="cancel-button">いいえ、キャンセル</button>
+  </div>
+</div>
+
 {% endblock content %} {% block script %}
 <script src="{% static 'js/home.js' %}"></script>
 <script>
 {% comment %} 年目標エリア {% endcomment %}
 
 {% comment %} 月目標エリア {% endcomment %}
+async function checkIfTodosAchieved(year, month) {
+  try {
+    const response = await fetch(
+      `/goal/year_goal/${year}/month_goal/${month}/has_unachieved_todos/`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch data");
+    }
+    const data = await response.json();
+    if (data) {
+      return data.has_unachieved_todos;
+    }
+    return false;
+  } catch (error) {
+    console.error("Error:", error);
+    document.getElementById("error-message").textContent =
+      error.message || "状態変更に失敗しました";
+  }
+}
+
+function hideModal() {
+  document.getElementById("modal").style.display = "none";
+}
+
+async function markGoalAsAchieve(id, yearGoal, month) {
+  try {
+    const response = await fetch(
+      `/goal/year_goal/${yearGoal.year}/month_goal/${month}/achieve/`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": "{{ csrf_token }}",
+        },
+        body: JSON.stringify({ month_id: id }),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to Achieve goal");
+    }
+
+    const data = await response.json();
+    console.log("Success:", data);
+    document.getElementById("achieve-month-goal-button").style.display = "none";
+    document.getElementById("achieve-month-goal-message").style.display = "block";
+  } catch (error) {
+    console.error("Error:", error);
+    document.getElementById("error-message").textContent =
+      error.message || "状態変更に失敗しました";
+  }
+}
+
+async function handleAchieveClick(monthGoal) {
+  const { id, month, yearGoal } = monthGoal;
+
+  const result = await checkIfTodosAchieved(yearGoal.year, month);
+  if (!result) {
+    markGoalAsAchieve(id, yearGoal, month);
+  } else {
+    // モーダルを表示
+    document.getElementById("modal").style.display = "flex";
+    document.getElementById("confirm-button").onclick = async function () {
+      await markGoalAsAchieve(id, yearGoal, month);
+      // モーダルを閉じる
+      hideModal();
+    };
+    document.getElementById("cancel-button").onclick = function () {
+      // モーダルを閉じる
+      hideModal();
+    };
+  }
+}
 
 {% comment %} Todoエリア {% endcomment %}
 async function markTodoAsAchieve(year, month, todoId) {
