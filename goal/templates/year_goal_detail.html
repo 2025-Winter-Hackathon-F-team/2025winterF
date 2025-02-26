@@ -181,10 +181,9 @@
       }
   }
 
-  async function checkIfUnachieved(yearGoalId) {
+  async function checkIfUnachieved(year) {
     try {
-      const userId = "{{ request.user.id }}";
-      const response = await fetch(`/goal/user/${userId}/has_unachieved_goals/`, {
+      const response = await fetch(`/goal/year_goal/${year}/has_unachieved_goals/`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -202,13 +201,13 @@
   }
 
   async function handleAchieveClick(yearGoalId, year) {
-    const result = await checkIfUnachieved(yearGoalId);
+    const result = await checkIfUnachieved(year);
     if (!result) {
-      markGoalAsAchieve(yearGoalId, year);
+      markGoalAsAchieve(yearGoalId);
     } else {
       document.getElementById("modal").style.display = "flex";
       document.getElementById("confirm-button").onclick = async function () {
-        await markGoalAsAchieveOnlyYear(yearGoalId, year);
+        await markGoalAsAchieve(yearGoalId);
         hideModal();
       };
       document.getElementById("cancel-button").onclick = function () {
@@ -221,7 +220,7 @@
     document.getElementById("modal").style.display = "none";
   }
 
-  async function markGoalAsAchieveOnlyYear(yearGoalId, year) {
+  async function markGoalAsAchieve(yearGoalId) {
     try {
       const response = await fetch(`/goal/year_goal/${yearGoalId}/achieve_only_year/`, {
         method: "POST",

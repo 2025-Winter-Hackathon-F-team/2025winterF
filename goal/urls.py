@@ -44,7 +44,7 @@ urlpatterns = [
         name="year_goal_achieve",
     ),
     path(
-        "user/<int:user_id>/has_unachieved_goals/",
+        "year_goal/<int:year>/has_unachieved_goals/",
         YearGoalAchievementView.as_view(),
         name="year_goal_achievement",
     ),

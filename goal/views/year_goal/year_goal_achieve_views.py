@@ -1,3 +1,4 @@
+from datetime import date
 import logging
 
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -13,37 +14,27 @@ logger = logging.getLogger(__name__)
 
 
 class YearGoalAchievementView(LoginRequiredMixin, View):
-    def get(self, request, user_id):
+    def get(self, request, *args, **kwargs):
         """
         指定されたユーザーに関連する未完了の年目標、月目標、ToDoが存在するかどうかを返す。
         """
-        user = get_object_or_404(User, id=user_id)
+        year = self.kwargs.get("year")
+        user = self.request.user
 
-        # ログインユーザーとリクエストされたユーザーが一致するか確認
-        if request.user != user:
-            return JsonResponse({"error": "権限がありません。"}, status=403)
-
-        year_goals = YearGoal.objects.filter(user=user)
-
-        # 未完了の年目標があるか確認
-        if year_goals.filter(status=YearGoal.STATUS_UNACHIEVED).exists():
-            return JsonResponse({"has_unachieved": True})
+        # 年目標取得
+        year_start_date = date(year, 1, 1)
+        year_goal = YearGoal.get_year_goal_for_user(user=user, year=year_start_date)
 
         # 年目標に紐づく月目標を取得
-        for year_goal in year_goals:
-            month_goals = MonthGoal.objects.filter(year_goal=year_goal)
-
-            # 未完了の月目標があるか確認
-            if month_goals.filter(status=MonthGoal.STATUS_UNACHIEVED).exists():
+        month_goals = MonthGoal.objects.filter(year_goal=year_goal).order_by("month")
+        # 月目標とTodoに未達成があるか確認
+        for month_goal in month_goals:
+            if (month_goal.status == MonthGoal.STATUS_UNACHIEVED) or (
+                Todos.has_unachieved(month_goal)
+            ):
                 return JsonResponse({"has_unachieved": True})
 
-            # 未完了のToDoがあるか確認
-            for month_goal in month_goals:
-                if Todos.objects.filter(
-                    month_goal=month_goal, status=Todos.STATUS_UNACHIEVED
-                ).exists():
-                    return JsonResponse({"has_unachieved": True})
-
+        # 月,todoに未達成がない場合
         return JsonResponse({"has_unachieved": False})
 
     def post(self, request, year_goal_id):
@@ -55,10 +46,8 @@ class YearGoalAchievementView(LoginRequiredMixin, View):
                 year_goal = get_object_or_404(
                     YearGoal, id=year_goal_id, user=request.user
                 )
-
                 year_goal.status = YearGoal.STATUS_ACHIEVED
                 year_goal.save()
-
                 return JsonResponse(
                     {"success": "Year goal marked as achieved."},
                     status=200,

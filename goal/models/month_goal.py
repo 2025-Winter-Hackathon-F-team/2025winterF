@@ -307,3 +307,30 @@ class MonthGoal(models.Model):
                 f"Unexpected error updating month_goal: {self.id} for year_goal {self.year_goal.id}: {e}"
             )
             raise
+
+    @classmethod
+    def has_unachieved(cls, year_goal):
+        """
+        指定された年目標に紐づく未達成の月目標が存在するかを確認する
+        Args:
+            year_goal (YearGoal): チェックする対象の年目標
+        Returns:
+            bool: 未達成の月目標が存在すればTrue、それ以外はFalse
+            None: エラーが発生した場合
+        Raise:
+            予期しないエラーのキャッチ場合
+        """
+        try:
+            return cls.objects.filter(
+                status=cls.STATUS_UNACHIEVED, year_goal=year_goal
+            ).exists()
+        except cls.DoesNotExist:
+            # 特定のオブジェクトが存在しない場合の処理
+            logger.warning(f"[MonthGoal] No month goal found: year_goal={year_goal.id}")
+            return None
+        except Exception as e:
+            # 予期しないエラーのキャッチ
+            logger.exception(
+                f"[MonthGoal] Unexpected error while checking unachieved todos for year_goal={year_goal.id}: {e}"
+            )
+            raise
