@@ -48,6 +48,10 @@
 </div>
 
 
-{% endblock content %} {% block script %}
+{% endblock content %}
+
+{% block hide_header %}True{% endblock hide_header %}
+
+{% block script %}
 <script src="{% static 'js/signup.js' %}"></script>
 {% endblock script %}

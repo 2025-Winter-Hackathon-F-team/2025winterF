@@ -2,15 +2,43 @@
 @import url("https://fonts.googleapis.com/css2?family=Kaisei+Opti:wght@400;700&display=swap");
 
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    list-style: none;
-    text-decoration: none;
-    font-family: "Kaisei Opti", serif;
-    /* background: linear-gradient(to bottom, #507FA9, #2A222B); */
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  list-style: none;
+  text-decoration: none;
+  font-family: "Kaisei Opti", serif;
+  /* background: linear-gradient(to bottom, #507FA9, #2A222B); */
 }
 
 html {
-    height: 100svh; /* 全画面表示 */
+  height: 100svh; /* 全画面表示 */
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+.home-button,
+.logout-button {
+  padding: 8px 15px;
+  background-color: transparent;
+  border: 1px solid #e5d99b;
+  color: #e5d99b;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.home-button:hover,
+.logout-button:hover {
+  background-color: #e5d99b;
+  color: #2e3b55;
 }

@@ -50,8 +50,26 @@
         <h3>{{ month_goal.month }}月の目標</h3>
         <p>{{ month_goal.title }}</p>
         <div class="goal-buttons">
-          <button class="goal-detail">詳細</button>
-          <button class="goal-complete">達成</button>
+          <a href="{% url 'goal:month_goal_detail' month_goal.month %}"
+            ><button class="goal-detail">詳細</button></a
+          >
+          <div
+            id="achieve-month-goal-button"
+            style="display: {% if month_goal.status == 0 %}block{% else %}none{% endif %};"
+          >
+            <button
+              class="goal-complete"
+              onClick="handleAchieveClick({{ month_goal.to_dict }})"
+            >
+              達成
+            </button>
+          </div>
+          <div
+            id="achieve-month-goal-message"
+            style="display: {% if month_goal.status == 0 %}none{% else %}block{% endif %};"
+          >
+            <p>達成</p>
+          </div>
         </div>
       </div>
       {% else %}
@@ -72,7 +90,16 @@
           <h3>{{ month_goal.month }}月のToDo_{{ todo.id }}</h3>
             <p>{{ todo.title }}</p>
             <div class="todo-buttons">
-              <button class="todo-complete">達成</button>
+              <button
+                id="achieve-todo-button-{{ todo.id }}"
+                class="todo-complete"
+                style="display: {% if todo.status == 0 %}block{% else %}none{% endif %};"
+                onclick="markTodoAsAchieve({{year_goal.year.year}},{{ month_goal.month }}, {{ todo.id }})">
+                達成
+              </button>
+              <p id="achieve-todo-message-{{ todo.id }}" style="display: {% if todo.status == 1 %}block{% else %}none{% endif %};">
+                達成
+              </p>
             </div>
         </div>
       {% empty %}
@@ -99,16 +126,138 @@
         {% endif %}
     </span>
   </div>
+</div>
 
-  <div class="logout">
-    <!-- ログアウトボタン -->
-    <form method="post" action="{% url 'account:logout' %}">
-      {% csrf_token %}
-      <button type="submit" class="logout-button">Logout</button>
-    </form>
+<!-- モーダルの構造 -->
+<div id="modal">
+  <div id="modal-content">
+    <p>
+      この月目標には未達成のToDoがあります。強制的に達成にすると、下のToDoも一括で完了となります。よろしいですか？
+    </p>
+    <button class="month-goal-modal-complete" id="confirm-button">
+      はい、強制達成する
+    </button>
+    <button class="month-goal-modal-cancel" id="cancel-button">いいえ、キャンセル</button>
   </div>
 </div>
 
 {% endblock content %} {% block script %}
 <script src="{% static 'js/home.js' %}"></script>
+<script>
+{% comment %} 年目標エリア {% endcomment %}
+
+{% comment %} 月目標エリア {% endcomment %}
+async function checkIfTodosAchieved(year, month) {
+  try {
+    const response = await fetch(
+      `/goal/year_goal/${year}/month_goal/${month}/has_unachieved_todos/`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch data");
+    }
+    const data = await response.json();
+    if (data) {
+      return data.has_unachieved_todos;
+    }
+    return false;
+  } catch (error) {
+    console.error("Error:", error);
+    document.getElementById("error-message").textContent =
+      error.message || "状態変更に失敗しました";
+  }
+}
+
+function hideModal() {
+  document.getElementById("modal").style.display = "none";
+}
+
+async function markGoalAsAchieve(id, yearGoal, month) {
+  try {
+    const response = await fetch(
+      `/goal/year_goal/${yearGoal.year}/month_goal/${month}/achieve/`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": "{{ csrf_token }}",
+        },
+        body: JSON.stringify({ month_id: id }),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to Achieve goal");
+    }
+
+    const data = await response.json();
+    console.log("Success:", data);
+    document.getElementById("achieve-month-goal-button").style.display = "none";
+    document.getElementById("achieve-month-goal-message").style.display = "block";
+  } catch (error) {
+    console.error("Error:", error);
+    document.getElementById("error-message").textContent =
+      error.message || "状態変更に失敗しました";
+  }
+}
+
+async function handleAchieveClick(monthGoal) {
+  const { id, month, yearGoal } = monthGoal;
+
+  const result = await checkIfTodosAchieved(yearGoal.year, month);
+  if (!result) {
+    markGoalAsAchieve(id, yearGoal, month);
+  } else {
+    // モーダルを表示
+    document.getElementById("modal").style.display = "flex";
+    document.getElementById("confirm-button").onclick = async function () {
+      await markGoalAsAchieve(id, yearGoal, month);
+      // モーダルを閉じる
+      hideModal();
+      location.reload();
+    };
+    document.getElementById("cancel-button").onclick = function () {
+      // モーダルを閉じる
+      hideModal();
+    };
+  }
+}
+
+{% comment %} Todoエリア {% endcomment %}
+async function markTodoAsAchieve(year, month, todoId) {
+  try {
+    const response = await fetch(
+      `/goal/year_goal/${year}/month_goal/${month}/todo/${todoId}/achieve/`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": "{{ csrf_token }}",
+        },
+        body: JSON.stringify({ todo_id: todoId})
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to Achieve todo");
+    }
+
+    const data = await response.json()
+    console.log("Success", data)
+    document.getElementById(`achieve-todo-button-${todoId}`).style.display = "none";
+    document.getElementById(`achieve-todo-message-${todoId}`).style.display = "block";
+  } catch (error) {
+    console.error("Error:", error);
+    console.log(error.message)
+    document.getElementById("error-message").textContent =
+      error.message || "状態変更に失敗しました";
+  }
+}
+</script>
 {% endblock script %}

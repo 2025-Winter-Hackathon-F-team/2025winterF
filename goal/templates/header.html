@@ -1,0 +1,16 @@
+<div class="header">
+  <!-- Home ボタン -->
+  <div class="home">
+    <a href="{% url 'goal:home' %}"
+      ><button type="submit" class="home-button">FiniteDays</button>
+    </a>
+  </div>
+
+  <!-- Logout ボタン -->
+  <div class="logout">
+    <form method="post" action="{% url 'account:logout' %}">
+      {% csrf_token %}
+      <button type="submit" class="logout-button">Logout</button>
+    </form>
+  </div>
+</div>

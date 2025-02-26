@@ -17,14 +17,14 @@ body {
 }
 
 /* 全体レイアウト */
-.year-goal-container {
+.month-goal-container {
   width: 80%;
   margin: auto;
   padding: 50px;
 }
 
-/* 年目標エリア */
-.year-goal-box {
+/* 月目標エリア */
+.month-goal-box {
   background: #ffffff;
   color: #454749;
   padding: 20px;
@@ -36,13 +36,20 @@ body {
   position: relative;
 }
 
-.year-goal-box h2 {
+.month-goal-box h2 {
   margin-bottom: 10px;
   display: flex;
 }
 
-/* 年目標の表示モード */
-#year-goal-display {
+.month-goal-title {
+  display: flex;
+  justify-content: space-between; /* タイトルと編集ボタンを横並び */
+  align-items: center;
+  padding: 10px;
+}
+
+/* 月目標の表示モード */
+#month-goal-display {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -63,7 +70,7 @@ body {
   padding: 5px 10px;
 }
 
-.year-goal-item {
+.month-goal-item {
   flex-shrink: 1;
 }
 
@@ -95,12 +102,21 @@ body {
   background: #ffffff90;
 }
 
-/* 月目標リスト */
-.month-goal-box {
+/* ToDoリスト */
+.todo-box {
   background: #ffffff;
   color: #454749;
   padding: 20px;
   border-radius: 10px;
+  position: relative;
+}
+
+/* ToDoリストヘッダー */
+.todo-header {
+  display: flex;
+  justify-content: space-between; /* 見出しと新規ボタンを横並び */
+  align-items: center;
+  padding: 10px;
 }
 
 table {
@@ -131,4 +147,50 @@ button {
 
 .error-text {
   color: red;
+}
+
+.todo-complete {
+  border: 1px solid #bb3a1e;
+  color: #bb3a1e;
+  border-radius: 10px;
+  margin: 10px;
+  padding: 5px 10px;
+}
+
+/* モーダル */
+#modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: none;
+  justify-content: center;
+  align-items: center;
+}
+
+#modal-content {
+  background: white;
+  color: #454749;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.todo-cancel {
+  border: 1px solid #3c6c76;
+  color: #3c6c76;
+  border-radius: 10px;
+  background: #ffffff90; /* 下２桁は不透明度 */
+}
+
+.todo-create {
+  border: 1px solid #3c6c76;
+  color: #3c6c76;
+  border-radius: 10px;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 5px 10px;
+  background: transparent;
 }

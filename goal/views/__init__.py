@@ -7,8 +7,9 @@ from .month_goal.month_goal_detail_views import MontGoalDetailView
 from .month_goal.month_goal_update_views import MonthGoalUpdateView
 from .month_goal.month_goal_achieve_views import MonthGoalAchieveView
 from .todo.todo_create_views import TodoCreateView
-from .todo.unachieved_todo_check_views import UnachievedTodoCheckView
 from .todo.todo_detail_views import TodoDetailView
 from .todo.todo_update_views import TodoUpdateView
+from .todo.todo_achive_views import TodoAchieveView
+from .todo.unachieved_todo_check_views import UnachievedTodoCheckView
 from .feedback import FeedbackView
 from .feedback_good import FeedbackGoodView
