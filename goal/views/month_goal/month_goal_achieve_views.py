@@ -63,7 +63,7 @@ class MonthGoalAchieveView(LoginRequiredMixin, UpdateView):
             return JsonResponse({"error": "Failed to mark month goal as achieved."}, status=500)
 
         # 未達成のTodoを達成済みに更新
-        update_todo_count = Todos.mark_todos_as_achieved_for_goal(month_goal=month_goal)
+        update_todo_count = Todos.mark_as_achieved_for_goal(month_goal=month_goal)
         if update_todo_count > 0:
             logger.info(f"[Todos] Updated {update_todo_count} todos as achieved for month_goal={month_goal.id}")
         else:
