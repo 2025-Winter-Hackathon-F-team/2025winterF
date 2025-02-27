@@ -11,6 +11,7 @@ from goal.models.year_goal import YearGoal
 
 logger = logging.getLogger(__name__)
 
+
 class UnachievedTodoCheckView(View):
 
     def get_object(self, year, month):
@@ -24,12 +25,16 @@ class UnachievedTodoCheckView(View):
         year_start_date = date(year, 1, 1)
         year_goal = YearGoal.get_year_goal_for_user(user=user, year=year_start_date)
         if not year_goal:
-            logger.warning(f"[YearGoal] Not found: user={user.id}, year={year_start_date}.")
+            logger.warning(
+                f"[YearGoal] Not found: user={user.id}, year={year_start_date}."
+            )
             return None
 
         month_goal = MonthGoal.get_specific_month_goal(year_goal=year_goal, month=month)
         if not month_goal:
-            logger.warning(f"[MonthGoal] Not found: month={month}, year_goal={year_goal.id}")
+            logger.warning(
+                f"[MonthGoal] Not found: month={month}, year_goal={year_goal.id}"
+            )
             return month_goal
 
         return month_goal
@@ -53,8 +58,13 @@ class UnachievedTodoCheckView(View):
             has_unachieved = Todos.has_unachieved(month_goal=month_goal)
             if has_unachieved is None:
                 # Todoが存在しない場合のエラーハンドリング
-                logger.warning(f"[Todo] Not found for month_goal={month_goal.id} in year {year}, month {month}.")
-                return JsonResponse({"error": "Todo not found for the specified month goal."}, status=404)
+                logger.warning(
+                    f"[Todo] Not found for month_goal={month_goal.id} in year {year}, month {month}."
+                )
+                return JsonResponse(
+                    {"error": "Todo not found for the specified month goal."},
+                    status=404,
+                )
             return JsonResponse({"has_unachieved_todos": has_unachieved})
         except Exception as e:
             # 一般的な例外のキャッチ

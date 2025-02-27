@@ -2,6 +2,7 @@ from .home import HomeView
 from .year_goal.create_year_goal_views import CreateYearGoalView
 from .year_goal.year_goal_detail_views import YearGoalDetailView
 from .year_goal.year_goal_update_views import YearGoalUpdateView
+from .year_goal.year_goal_achieve_views import YearGoalAchievementView
 from .month_goal.month_goal_detail_views import MontGoalDetailView
 from .month_goal.month_goal_update_views import MonthGoalUpdateView
 from .month_goal.month_goal_achieve_views import MonthGoalAchieveView
