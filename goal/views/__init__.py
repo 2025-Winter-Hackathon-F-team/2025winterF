@@ -11,5 +11,5 @@ from .todo.todo_detail_views import TodoDetailView
 from .todo.todo_update_views import TodoUpdateView
 from .todo.todo_achive_views import TodoAchieveView
 from .todo.unachieved_todo_check_views import UnachievedTodoCheckView
-from .feedback import FeedbackView
+from .message.feedback import FeedbackView
 from .message.feedback_good import FeedbackGoodView

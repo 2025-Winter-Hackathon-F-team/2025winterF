@@ -53,3 +53,23 @@ class Message(models.Model):
                 f"Unexpected error when fetching praise messages: {e}"
             )
         return cls.objects.none()
+
+    @classmethod
+    def get_scold_messages(cls):
+        """
+        叱るの言葉の一覧を取得する
+
+        Returns:
+            QuerySet(Message): 叱るの言葉一覧 (エラー時は空の QuerySet)
+        """
+        try:
+            return cls.objects.filter(type=cls.MESSAGE_TYPE_SCOLD)
+        except DatabaseError as e:
+            logger.error(
+                f"Database error when fetching scold messages: {e}"
+            )
+        except Exception as e:
+            logger.exception(
+                f"Unexpected error when fetching scold messages: {e}"
+            )
+        return cls.objects.none()
