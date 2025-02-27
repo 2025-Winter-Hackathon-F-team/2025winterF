@@ -216,6 +216,18 @@ body {
   align-items: center;
 }
 
+#year_modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: none;
+  justify-content: center;
+  align-items: center;
+}
+
 #modal-content {
   background: white;
   color: #454749;
@@ -235,6 +247,27 @@ body {
 }
 
 .month-goal-modal-complete {
+  border: 1px solid #bb3a1e;
+  color: #bb3a1e;
+  border-radius: 10px;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 5px 10px;
+  background: transparent;
+}
+
+
+.year-goal-modal-cancel {
+  border: 1px solid #3c6c76;
+  color: #3c6c76;
+  border-radius: 10px;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 5px 10px;
+  background: transparent;
+}
+
+.year-goal-modal-complete {
   border: 1px solid #bb3a1e;
   color: #bb3a1e;
   border-radius: 10px;
