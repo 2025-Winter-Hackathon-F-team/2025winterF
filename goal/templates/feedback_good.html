@@ -4,11 +4,7 @@
 {% endblock head %} {% block content %}
 <div class="feedback-container">
   <div class="message-box">
-    {% if message %}
-    <p><h1>{{ message.message }}</h1></p>
-    {% else %}
-    <p>{{ default_message }}</p>
-    {% endif %}
+    <p><h1>{{ praise_message }}</h1></p>
   </div>
 </div>
 {% endblock content %} {% block script %}

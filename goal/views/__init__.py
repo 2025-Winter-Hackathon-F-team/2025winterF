@@ -12,4 +12,4 @@ from .todo.todo_update_views import TodoUpdateView
 from .todo.todo_achive_views import TodoAchieveView
 from .todo.unachieved_todo_check_views import UnachievedTodoCheckView
 from .feedback import FeedbackView
-from .feedback_good import FeedbackGoodView
+from .message.feedback_good import FeedbackGoodView
