@@ -63,7 +63,7 @@
           >
             <button
               class="goal-complete"
-              onClick="handleAchieveClick({{ month_goal.to_dict }})"
+              onClick="handleMonthGoalAchieveClick({{ month_goal.to_dict }})"
             >
               達成
             </button>
@@ -188,7 +188,7 @@
     document.getElementById("modal").style.display = "none";
   }
 
-  async function markGoalAsAchieve(id, yearGoal, month) {
+  async function markMonthGoalAsAchieve(id, yearGoal, month) {
     try {
       const response = await fetch(
         `/goal/year_goal/${yearGoal.year}/month_goal/${month}/achieve/`,
@@ -217,25 +217,44 @@
     }
   }
 
-  async function handleAchieveClick(monthGoal) {
+  async function handleMonthGoalAchieveClick(monthGoal) {
     const { id, month, yearGoal } = monthGoal;
 
     const result = await checkIfTodosAchieved(yearGoal.year, month);
     if (!result) {
-      markGoalAsAchieve(id, yearGoal, month);
+      // 月目標を達成ずみにする
+      await markMonthGoalAsAchieve(id, yearGoal, month);
+      // 目標達成後にリダイレクト
+      redirectToMonthGoalFeedbackPage(yearGoal, month)
     } else {
       // モーダルを表示
       document.getElementById("modal").style.display = "flex";
       document.getElementById("confirm-button").onclick = async function () {
-        await markGoalAsAchieve(id, yearGoal, month);
+        // 月目標を達成ずみにする
+        await markMonthGoalAsAchieve(id, yearGoal, month);
         // モーダルを閉じる
         hideModal();
-        location.reload();
+        // 目標達成後にリダイレクト
+        redirectToMonthGoalFeedbackPage(yearGoal, month)
       };
       document.getElementById("cancel-button").onclick = function () {
         // モーダルを閉じる
         hideModal();
       };
+    }
+  }
+
+  function redirectToMonthGoalFeedbackPage(yearGoal, month) {
+    // 現在の日付を取得
+    const nowDate = new Date();
+
+    // 月目標の月の1日に設定
+    const monthGoalDate = new Date(yearGoal.year, month - 1, 1);
+
+    if (nowDate.getMonth() > monthGoalDate.getMonth()) {
+      window.location.href = `/goal/feedback/`;
+    } else {
+      window.location.href = `/goal/feedback_good/`;
     }
   }
 
@@ -269,5 +288,5 @@
         error.message || "状態変更に失敗しました";
     }
   }
-</script>
+  </script>
 {% endblock script %}
