@@ -41,7 +41,7 @@ class HomeView(LoginRequiredMixin, TemplateView):
 
         # 今月のToDo（すべて取得 & ページネーション）
         todos = Todos.get_current_month_todos(user)
-        paginator = Paginator(todos, 3)  # １ページあたりの件数
+        paginator = Paginator(todos, 5)  # １ページあたりの件数
         page_number = self.request.GET.get("page")  # URLのパラメータから現在のページ番号を取得
         page_obj = paginator.get_page(page_number)  # 指定ページのオブジェクトを返す
         context["todos"] = page_obj
