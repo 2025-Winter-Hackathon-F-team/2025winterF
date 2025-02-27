@@ -1,14 +1,10 @@
-import logging
 from random import choice
 
 from django.shortcuts import render
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-
 from ...models import Message
-
-logger = logging.getLogger(__name__)
 
 
 class FeedbackGoodView(LoginRequiredMixin, TemplateView):
