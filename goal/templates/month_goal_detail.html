@@ -63,7 +63,7 @@
             {% if todo.status == 0 %}
               未達成
             {% elif todo.status == 1 %}
-              達成
+              達成済
             {% else %}
               未達成
             {% endif %}
@@ -92,7 +92,7 @@
     id="achieve-message"
     style="display: {% if month_goal.status == 0 %}none{% else %}block{% endif %};"
   >
-    <p>達成</p>
+    <p>達成済</p>
   </div>
   <p id="error-message" style="color: red"></p>
   <!-- エラー表示用 -->
@@ -160,24 +160,42 @@
 
   async function handleAchieveClick(monthGoal) {
     const { id, month, yearGoal } = monthGoal;
-    console.log(yearGoal);
 
     const result = await checkIfTodosAchieved(yearGoal.year, month);
     if (!result) {
-      markGoalAsAchieve(id, yearGoal, month);
+      // 月目標を達成ずみにする
+      await markGoalAsAchieve(id, yearGoal, month);
+      // 目標達成後にリダイレクト
+      redirectToFeedbackPage(yearGoal, month)
     } else {
       // モーダルを表示
       document.getElementById("modal").style.display = "flex";
       document.getElementById("confirm-button").onclick = async function () {
+        // 月目標を達成ずみにする
         await markGoalAsAchieve(id, yearGoal, month);
         // モーダルを閉じる
         hideModal();
-        location.reload();
+        // 目標達成後にリダイレクト
+        redirectToFeedbackPage(yearGoal, month)
       };
       document.getElementById("cancel-button").onclick = function () {
         // モーダルを閉じる
         hideModal();
       };
+    }
+  }
+
+  function redirectToFeedbackPage(yearGoal, month) {
+    // 現在の日付を取得
+    const nowDate = new Date();
+
+    // 月目標の月の1日に設定
+    const monthGoalDate = new Date(yearGoal.year, month - 1, 1);
+
+    if (nowDate.getMonth() > monthGoalDate.getMonth()) {
+      window.location.href = `/goal/feedback/`;
+    } else {
+      window.location.href = `/goal/feedback_good/`;
     }
   }
 

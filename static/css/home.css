@@ -196,6 +196,13 @@ body {
   border-radius: 10px;
 }
 
+.achieved-card {
+  border: 2px solid gold; /* ゴールドの枠線 */
+  background-color: rgba(255, 215, 0, 0.2); /* 薄いゴールド背景 */
+  color: #ffffff;
+  font-weight: bold;
+}
+
 /* モーダルのスタイル */
 #modal {
   position: fixed;
@@ -248,6 +255,7 @@ body {
   padding: 5px 10px;
   background: transparent;
 }
+
 
 .year-goal-modal-cancel {
   border: 1px solid #3c6c76;
