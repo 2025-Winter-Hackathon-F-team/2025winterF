@@ -19,11 +19,14 @@
 
   <body>
     <!-- ヘッダーを共通化(hide_header=Trueの場合非表示) -->
-    {% block hide_header %}
-    {% if not hide_header %}
+    <!-- hide_headerの値を取得するが、非表示にする -->
+    <span id="hide-header" style="display: none;">
+      {% block hide_header %}{% endblock hide_header %}
+    </span>
+
+    {% if hide_header != "True" %}
       {% include "header.html" %}
     {% endif %}
-    {% endblock hide_header %}
 
     {% block content %}{% endblock content %}
     {% block script %}{% endblock script %}

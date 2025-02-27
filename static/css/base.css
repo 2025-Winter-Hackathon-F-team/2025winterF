@@ -42,3 +42,7 @@ html {
   background-color: #e5d99b;
   color: #2e3b55;
 }
+
+#hide-header {
+    display: none;
+}
