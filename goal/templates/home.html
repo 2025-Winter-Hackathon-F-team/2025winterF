@@ -147,8 +147,8 @@
 <div id="year_modal" style="display: none">
   <div id="modal-content"style="color: black;">
     <p>月目標とToDoに未完了があります。年目標を達成にしてよろしいですか。</p>
-    <button class="year-goal-modal-complete" id="confirm-button">はい</button>
-    <button class="year-goal-modal-cancel" id="cancel-button">いいえ</button>
+    <button class="year-goal-modal-complete" id="year-confirm-button">はい</button>
+    <button class="year-goal-modal-cancel" id="year-cancel-button">いいえ</button>
   </div>
 </div>
 {% endblock content %} {% block script %}
@@ -175,27 +175,27 @@ async function checkIfUnachieved(year) {
   }
 
   async function handleYearGoalAchieveClick(yearGoalId, year) {
-
     const result = await checkIfUnachieved(year);
     if (!result) {
-      markGoalAsAchieve(yearGoalId);
+      markYearGoalAsAchieve(yearGoalId);
     } else {
       document.getElementById("year_modal").style.display = "flex";
-      document.getElementById("confirm-button").onclick = async function () {
-        await markGoalAsAchieve(yearGoalId);
-        hideModal();
+      document.getElementById("year-confirm-button").onclick = async function () {
+        await markYearGoalAsAchieve(yearGoalId);
+        YearhideModal();
       };
-      document.getElementById("cancel-button").onclick = function () {
-        hideModal();
+      document.getElementById("year-cancel-button").onclick = function () {
+        YearhideModal();
       };
     }
   }
 
-  function hideModal() {
+  function YearhideModal() {
+    console.log("hideModal called");
     document.getElementById("year_modal").style.display = "none";
   }
 
-  async function markGoalAsAchieve(yearGoalId) {
+  async function markYearGoalAsAchieve(yearGoalId) {
     try {
       const response = await fetch(`/goal/year_goal/${yearGoalId}/achieve_only_year/`, {
         method: "POST",
@@ -211,6 +211,7 @@ async function checkIfUnachieved(year) {
 
       const data= await response.json();
       console.log("Success:", data);
+
       // 達成ボタンを非表示にし、達成メッセージを表示
       document.getElementById(`achieve-button-${yearGoalId}`).style.display = "none";
       document.getElementById(`achieve-message-${yearGoalId}`).style.display = "block";
