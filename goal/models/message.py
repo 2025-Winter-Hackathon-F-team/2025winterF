@@ -1,4 +1,10 @@
-from django.db import models
+import logging
+
+from django.db import models, DatabaseError
+
+
+logger = logging.getLogger(__name__)
+
 
 class Message(models.Model):
     # メッセージタイプを表す定数
@@ -27,3 +33,43 @@ class Message(models.Model):
 
     def __str__(self):
         return self.message
+
+    @classmethod
+    def get_praise_messages(cls):
+        """
+        お褒めの言葉の一覧を取得する
+
+        Returns:
+            QuerySet(Message): お褒めの言葉一覧 (エラー時は空の QuerySet)
+        """
+        try:
+            return cls.objects.filter(type=cls.MESSAGE_TYPE_PRAISE)
+        except DatabaseError as e:
+            logger.error(
+                f"Database error when fetching praise messages: {e}"
+            )
+        except Exception as e:
+            logger.exception(
+                f"Unexpected error when fetching praise messages: {e}"
+            )
+        return cls.objects.none()
+
+    @classmethod
+    def get_scold_messages(cls):
+        """
+        叱るの言葉の一覧を取得する
+
+        Returns:
+            QuerySet(Message): 叱るの言葉一覧 (エラー時は空の QuerySet)
+        """
+        try:
+            return cls.objects.filter(type=cls.MESSAGE_TYPE_SCOLD)
+        except DatabaseError as e:
+            logger.error(
+                f"Database error when fetching scold messages: {e}"
+            )
+        except Exception as e:
+            logger.exception(
+                f"Unexpected error when fetching scold messages: {e}"
+            )
+        return cls.objects.none()
