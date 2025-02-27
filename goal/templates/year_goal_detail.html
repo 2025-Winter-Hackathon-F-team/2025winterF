@@ -42,7 +42,7 @@
       <button class="achieve-button" id="achieve-button-{{ year_goal.id }}" onclick="handleAchieveClick({{ year_goal.id }}, {{ year_goal.year.year }})"style="display:{%if year_goal.status == 0 %}block{% else %}none{% endif %}";>達成済みにする</button>
     </div>
     <div id="achieve-message-{{ year_goal.id }}"style="display:{%if year_goal.status == 1 %}block{% else %}none{% endif %}";>
-      <p>達成済み</p>
+      <p>達成</p>
     </div>
     <!-- 編集モード（非表示） -->
     <div class="year-goal-item">
