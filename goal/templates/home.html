@@ -208,8 +208,7 @@
 
       const data = await response.json();
       console.log("Success:", data);
-      document.getElementById("achieve-month-goal-button").style.display = "none";
-      document.getElementById("achieve-month-goal-message").style.display = "block";
+      location.reload();
     } catch (error) {
       console.error("Error:", error);
       document.getElementById("error-message").textContent =
@@ -279,8 +278,7 @@
 
       const data = await response.json()
       console.log("Success", data)
-      document.getElementById(`achieve-todo-button-${todoId}`).style.display = "none";
-      document.getElementById(`achieve-todo-message-${todoId}`).style.display = "block";
+      location.reload();
     } catch (error) {
       console.error("Error:", error);
       console.log(error.message)
