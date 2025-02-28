@@ -223,8 +223,6 @@
 
       const data = await response.json();
       console.log("Success:", data);
-      document.getElementById("achieve-button").style.display = "none";
-      document.getElementById("achieve-message").style.display = "block";
     } catch (error) {
       console.error("Error:", error);
       document.getElementById("error-message").textContent =
@@ -270,9 +268,7 @@
         throw new Error(data.error?.title?.join(", ") || "保存に失敗しました");
       }
 
-      document.getElementById("month-goal-text").textContent = newTitle;
-      document.getElementById("error-message").textContent = "";
-      toggleEdit();
+      location.reload();
     } catch (error) {
       console.error("Error:", error);
       document.getElementById("error-message").textContent =
